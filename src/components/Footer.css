@@ -1,0 +1,16 @@
+.footer {
+    height: 8rem;
+    padding: 2rem;
+    background-color: #005733;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-text {
+    color: #fff;
+    opacity: 0.5;
+    text-align: center;
+    font-weight: 300;
+}

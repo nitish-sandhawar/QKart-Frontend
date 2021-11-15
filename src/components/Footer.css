@@ -1,7 +1,7 @@
 .footer {
-    height: 8rem;
+    height: 25vh;
     padding: 2rem;
-    background-color: #005733;
+    background-color: #042C22;
     display: flex;
     flex-direction: column;
     justify-content: center;

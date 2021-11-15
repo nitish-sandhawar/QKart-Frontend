@@ -8,15 +8,7 @@ export const config = {
 function App() {
   return (
     <div className="App">
-          <Register />
-          <Login />
-        </Route> */}
-          <Products />
-        </Route> */}
-
-
-          <Home />
-        </Route> */}
+      <Register />
     </div>
   );
 }

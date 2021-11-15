@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.5.0",
-    "@emotion/styled": "^11.3.0",
+    "@emotion/react": "^11.6.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/system": "^5.1.0",
     "@mui/icons-material": "^5.0.5",
     "@mui/material": "^5.0.6",
     "@testing-library/jest-dom": "^5.14.1",
@@ -26,7 +27,7 @@
     "resetMocks": false
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=8081 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

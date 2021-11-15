@@ -9,10 +9,8 @@ import Header from "./Header";
 import "./Register.css";
 
 const Register = () => {
-  // const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const handleInput = (e) => {
-  };
 
   // TODO: CRIO_TASK_MODULE_LOGIN - Implement user input validation logic
   /**
@@ -120,7 +118,7 @@ const Register = () => {
             className="button"
             variant="contained"
             // CRIO_SOLUTION_START_MODULE_REGISTER
-            // onClick={() => register(formData)}
+            onClick={() => register(formData)}
             // CRIO_SOLUTION_END_MODULE_REGISTER
           <p className="secondary-action">
             Already have an account?{" "}

@@ -28,6 +28,7 @@
 .link {
   font-weight: 700;
   text-decoration: none;
+  color: #45c09f;
 }
 
 .link:focus {
@@ -42,6 +43,9 @@
   color: #45c09f;
 }
 
+.MuiButton-root.MuiButton-contained:hover {
+    background-color: #00845c;
+}
 @media screen and (min-width: 768px) {
   .form {
     min-width: 24rem;

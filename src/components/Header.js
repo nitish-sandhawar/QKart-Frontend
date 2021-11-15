@@ -12,6 +12,7 @@ const Header = () =>
         <Box
           className="header-title"
         >
+          {/* FIXME - Skip svg in stub generator */}
           <img src="logo_light.svg" alt="QKart-icon"></img>
         </Box>
         <Button

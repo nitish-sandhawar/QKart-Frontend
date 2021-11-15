@@ -27,8 +27,6 @@ const Register = () => {
    * -    Check that password field is not more than 32 characters in length
    * -    Check that confirmPassword field has the same value as password field
    */
-  const validateInput = (data) => {
-  };
 
   /**
    * Definition for register handler
@@ -113,7 +111,7 @@ const Register = () => {
             fullWidth
           />
           {/* CRIO_UNCOMMENT_START_MODULE_REGISTER */}
-          <Button
+          {/* <Button
             className="button"
             variant="contained"
             // CRIO_SOLUTION_START_MODULE_REGISTER

@@ -1,6 +1,6 @@
 .footer {
     height: 25vh;
-    padding: 2rem;
+    /* padding: 2rem; */
     background-color: #042C22;
     display: flex;
     flex-direction: column;

@@ -5,8 +5,8 @@ import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { config } from "../App";
-import AlternateHeader from "../components/AlternateHeader";
-import Layout from "../components/Layout";
+import Footer from "./Footer";
+import Header from "./Header";
 import "./Login.css";
 
 const Login = () => {
@@ -14,6 +14,11 @@ const Login = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [loading, setLoading] = useState(false);
+
+  const handleInput = (e) => {
+    const [key, value] = [e.target.name, e.target.value];
+    setFormData((nextFormData) => ({ ...nextFormData, [key]: value }));
+  };
 
   // TODO: CRIO_TASK_MODULE_LOGIN - Validate the input
   /**
@@ -26,7 +31,26 @@ const Login = () => {
    * -    Check that username field is not an empty value
    * -    Check that password field is not an empty value
    */
-  const validateInput = () => {
+  const validateInput = (data) => {
+  };
+
+  // TODO: CRIO_TASK_MODULE_LOGIN - Persist user's login information
+  /**
+   * Store the login information so that it can be used to identify the user in subsequent API calls
+   *
+   * @param {string} token
+   *    API token used for authentication of requests after logging in
+   * @param {string} username
+   *    Username of the logged in user
+   * @param {string} balance
+   *    Wallet balance amount of the logged in user
+   *
+   * Make use of localStorage: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+   * -    `token` field in localStorage can be used to store the Oauth token
+   * -    `username` field in localStorage can be used to store the username that the user is logged in as
+   * -    `balance` field in localStorage can be used to store the balance amount in the user's wallet
+   */
+  const persistLogin = (token, username, balance) => {
   };
 
   // TODO: CRIO_TASK_MODULE_LOGIN - Fetch the API response
@@ -61,36 +85,18 @@ const Login = () => {
    *      "message": "Password is incorrect"
    * }
    */
-  const performAPICall = async () => {
+  const login = async (formData) => {
   };
 
-  // TODO: CRIO_TASK_MODULE_LOGIN - Persist user's login information
-  /**
-   * Store the login information so that it can be used to identify the user in subsequent API calls
-   *
-   * @param {string} token
-   *    API token used for authentication of requests after logging in
-   * @param {string} username
-   *    Username of the logged in user
-   * @param {string} balance
-   *    Wallet balance amount of the logged in user
-   *
-   * Make use of localStorage: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
-   * -    `token` field in localStorage can be used to store the Oauth token
-   * -    `username` field in localStorage can be used to store the username that the user is logged in as
-   * -    `balance` field in localStorage can be used to store the balance amount in the user's wallet
-   */
-  const persistLogin = (token, username, balance) => {
-  };
-
-  // TODO: CRIO_TASK_MODULE_LOGIN - Implement the login() function to display a message, "Login logic not implemented yet"
-  const login = async () => {
-     validateInput();
-  };
 
   return (
-    <Layout>
-      <AlternateHeader />
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="space-between"
+      minHeight="100vh"
+    >
+      <Header hasHiddenAuthButtons />
       <Box className="content">
         <Stack spacing={2} className="form">
           <h2 className="title">Login</h2>
@@ -102,9 +108,7 @@ const Login = () => {
             name="username"
             placeholder="Enter Username"
             fullWidth
-            onChange={(e) => {
-              setFormData({ ...formData, username: e.target.value });
-            }}
+            onChange={handleInput}
           />
           <TextField
             id="password"
@@ -113,9 +117,7 @@ const Login = () => {
             name="password"
             type="password"
             placeholder="Enter a password"
-            onChange={(e) => {
-              setFormData({ ...formData, password: e.target.value });
-            }}
+            onChange={handleInput}
             fullWidth
           />
           {loading ? (
@@ -123,7 +125,7 @@ const Login = () => {
               <CircularProgress size={25} color="primary" />
             </Box>
           ) : (
-            <Button variant="contained" onClick={login}>
+            <Button variant="contained" onClick={() => login(formData)}>
               Login to QKart
             </Button>
           )}
@@ -135,7 +137,8 @@ const Login = () => {
           </p>
         </Stack>
       </Box>
-    </Layout>
+      <Footer />
+    </Box>
   );
 };
 

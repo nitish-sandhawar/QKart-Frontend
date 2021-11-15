@@ -1,5 +1,3 @@
-import { Route, Switch } from "react-router";
-import "./App.css";
 import Register from "./components/Register";
 import ipConfig from "./ipConfig.json";
 
@@ -10,27 +8,15 @@ export const config = {
 function App() {
   return (
     <div className="App">
-      <Switch>
-        <Route path="/register">
           <Register />
-        </Route>
-        <Route path="/login">
           <Login />
-        </Route>
-        <Route path="/">
+        </Route> */}
           <Products />
-        </Route>
-          <Checkout />
-        </Route>
-
-        <Route path="/thanks">
-          <Thanks />
         </Route> */}
 
 
           <Home />
         </Route> */}
-      </Switch>
     </div>
   );
 }

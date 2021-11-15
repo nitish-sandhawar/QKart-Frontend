@@ -97,7 +97,6 @@ const Register = () => {
             name="username"
             placeholder="Enter Username"
             fullWidth
-            onChange={handleInput}
           />
           <TextField
             id="password"
@@ -105,7 +104,6 @@ const Register = () => {
             label="Password"
             name="password"
             type="password"
-            onChange={handleInput}
             helperText="Password must be atleast 6 characters length"
             fullWidth
           />
@@ -115,8 +113,6 @@ const Register = () => {
             label="Confirm Password"
             name="confirmPassword"
             type="password"
-            placeholder="Re-enter your password to confirm"
-            onChange={handleInput}
             fullWidth
           />
           {/* CRIO_UNCOMMENT_START_MODULE_REGISTER */}
@@ -124,7 +120,7 @@ const Register = () => {
             className="button"
             variant="contained"
             // CRIO_SOLUTION_START_MODULE_REGISTER
-            onClick={() => register(formData)}
+            // onClick={() => register(formData)}
             // CRIO_SOLUTION_END_MODULE_REGISTER
           <p className="secondary-action">
             Already have an account?{" "}

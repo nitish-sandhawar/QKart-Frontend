@@ -1,5 +1,7 @@
 .content {
+    /* FIXME - Update to latest */
     background-image: url("../assets/login_hero.png");
+    /* background-image: url("../assets/hero_image.png"); */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

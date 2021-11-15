@@ -3,14 +3,12 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
-import { useHistory } from "react-router";
 import { config } from "../App";
-import AlternateHeader from "../components/AlternateHeader";
-import Layout from "../components/Layout";
+import Footer from "./Footer";
+import Header from "./Header";
 import "./Register.css";
 
 const Register = () => {
-  const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const [formData, setFormData] = useState({
     username: "",
@@ -18,6 +16,11 @@ const Register = () => {
     confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
+
+  const handleInput = (e) => {
+    const [key, value] = [e.target.name, e.target.value];
+    setFormData((nextFormData) => ({ ...nextFormData, [key]: value }));
+  };
 
   /**
    * Validate the input values so that any bad or illegal values are not passed to the backend.
@@ -34,7 +37,7 @@ const Register = () => {
    * -    Check that password field is not more than 32 characters in length
    * -    Check that confirmPassword field has the same value as password field
    */
-  const validateInput = () => {
+  const validateInput = (data) => {
   };
 
   /**
@@ -68,7 +71,7 @@ const Register = () => {
    *      "message": "Username is already taken"
    * }
    */
-  const performAPICall = async () => {
+  const register = async (formData) => {
   };
 
   /**
@@ -81,13 +84,17 @@ const Register = () => {
    *      -   Display a success message
    *      -   Redirect the user to the "/login" page
    */
-  const register = async () => {
-  };
+
+
 
   return (
-    // FIXME - Can we have the <Layout> component defined here instead of a separate component?
-    <Layout>
-      <AlternateHeader />
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="space-between"
+      minHeight="100vh"
+    >
+      <Header hasHiddenAuthButtons />
       <Box className="content">
         <Stack spacing={2} className="form">
           <h2 className="title">Register</h2>
@@ -99,9 +106,7 @@ const Register = () => {
             name="username"
             placeholder="Enter Username"
             fullWidth
-            onChange={(e) => {
-              setFormData({ ...formData, username: e.target.value });
-            }}
+            onChange={handleInput}
           />
           <TextField
             id="password"
@@ -110,10 +115,8 @@ const Register = () => {
             name="password"
             type="password"
             placeholder="Enter a password with minimum 8 characters"
-            onChange={(e) => {
-              setFormData({ ...formData, password: e.target.value });
-            }}
-            helperText="Password must include at least one numeric character, one uppercase, and one lowercase letter"
+            onChange={handleInput}
+            helperText="Password must be atleast 6 characters length"
             fullWidth
           />
           <TextField
@@ -123,9 +126,7 @@ const Register = () => {
             name="confirmPassword"
             type="password"
             placeholder="Re-enter your password to confirm"
-            onChange={(e) => {
-              setFormData({ ...formData, confirmPassword: e.target.value });
-            }}
+            onChange={handleInput}
             fullWidth
           />
           {loading ? (
@@ -133,7 +134,11 @@ const Register = () => {
               <CircularProgress size={25} color="primary" />
             </Box>
           ) : (
-            <Button variant="contained" onClick={register}>
+            <Button
+              className="button"
+              variant="contained"
+              onClick={() => register(formData)}
+            >
               Register Now
             </Button>
           )}
@@ -145,7 +150,8 @@ const Register = () => {
           </p>
         </Stack>
       </Box>
-    </Layout>
+      <Footer />
+    </Box>
   );
 };
 

@@ -31,14 +31,6 @@
     padding: 0.2rem;
 }
 
-.card {
-    height: 100%;
-}
-
-.card-actions {
-    margin-bottom: 1rem;
-}
-
 .loading {
     display: flex;
     flex-direction: column;
@@ -46,6 +38,14 @@
     justify-content: center;
     width: 100%;
     height: 50vh;
+}
+
+.search-mobile {
+    display: block !important;
+}
+
+.search-desktop {
+    display: none !important;
 }
 
 @media screen and (min-width: 768px) {
@@ -58,5 +58,11 @@
         position: static;
         font-size: 3rem;
         width: 50%;
+    }
+    .search-mobile {
+        display: none !important;
+    }
+    .search-desktop {
+        display: block !important;
     }
 }

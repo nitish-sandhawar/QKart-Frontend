@@ -12,6 +12,7 @@ jest.mock("axios");
 
 describe("Register Page", () => {
   beforeEach(() => {
+    // FIXME - See if needed
     Object.defineProperty(window, "localStorage", {
       value: {
         getItem: jest.fn(() => null),
@@ -123,31 +124,6 @@ describe("Register Page", () => {
     expect(alert).toHaveTextContent(/6/i);
   });
 
-  it("should throw error if password or username > 32 chars long", async () => {
-    const usernameInput = screen.getByLabelText(/username/i);
-    const [passwordInput, confirmPassword] =
-      screen.getAllByLabelText(/password/i);
-
-    userEvent.type(
-      usernameInput,
-      "Ajikf9kNIFOWNoskawuf03jaksj90jlaksjdklajw0ddij23ikc0aicn30ninainfi3r0ijv09034rhnvia0e98r3"
-    );
-    userEvent.type(
-      passwordInput,
-      "Ajikf9kNIFOWNoskawuf03jaksj90jlaksjdklajw0ddij23ikc0aicn30ninainfi3r0ijv09034rhnvia0e98r3"
-    );
-    userEvent.type(
-      confirmPassword,
-      "Ajikf9kNIFOWNoskawuf03jaksj90jlaksjdklajw0ddij23ikc0aicn30ninainfi3r0ijv09034rhnvia0e98r3"
-    );
-
-    userEvent.click(screen.getByRole("button", { name: /register/i }));
-
-    const alert = await screen.findByRole("alert");
-    expect(alert).toBeInTheDocument();
-    expect(alert).toHaveTextContent(/32/i);
-  });
-
   it("should throw error if password and confirm password are not same", async () => {
     const usernameInput = screen.getByLabelText(/username/i);
     const [passwordInput, confirmPassword] =
@@ -221,12 +197,7 @@ describe("Register Page", () => {
 
     expect(axios.post).toHaveBeenCalledWith(
       `${config.endpoint}/auth/register`,
-      request,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      request
     );
   });
 
@@ -244,17 +215,4 @@ describe("Register Page", () => {
     expect(alert).toHaveTextContent(/success/i);
   });
 
-  it("should redirect to login after success", async () => {
-    const request = {
-      username: "crio.do",
-      password: "learnbydoing",
-    };
-
-    const promise = inputFormAndButtonClick(request);
-
-    await act(() => promise);
-
-    const loginPage = await screen.findByText(/login page mock/i);
-    expect(loginPage).toBeInTheDocument();
-  });
 });

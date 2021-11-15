@@ -57,7 +57,9 @@ describe("Login Page", () => {
 
   //Header has back to explore button
   it("should have header with back to explore button", () => {
-    const exploreButton = screen.getByRole("button", {name: /back to explore/i})
+    const exploreButton = screen.getByRole("button", {
+      name: /back to explore/i,
+    });
     expect(exploreButton).toBeInTheDocument();
   });
 
@@ -72,7 +74,7 @@ describe("Login Page", () => {
   });
 
   it("should have register now link", () => {
-    const registerNow = screen.getByRole("link", {name: /register now/i})
+    const registerNow = screen.getByRole("link", { name: /register now/i });
     expect(registerNow).toBeInTheDocument();
   });
 
@@ -152,12 +154,7 @@ describe("Login Page", () => {
 
     expect(axios.post).toHaveBeenCalledWith(
       `${config.endpoint}/auth/login`,
-      request,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      request
     );
   });
 

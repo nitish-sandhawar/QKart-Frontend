@@ -1,15 +1,16 @@
 import { Box } from "@mui/system";
 import React from "react";
 import "./Footer.css";
-import Logo from "./Logo";
 
 const Footer = () => {
   return (
     <Box className="footer">
-      <Logo variant="dark" />
+      <Box>
+        <img src="logo_dark.svg" alt="QKart-icon"></img>
+      </Box>
       <p className="footer-text">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt.
+        QKart is your one stop solution to the buy the latest trending items
+        with India's Fastest Delivery to your doorstep
       </p>
     </Box>
   );

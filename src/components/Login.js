@@ -88,7 +88,6 @@ const Login = () => {
   const login = async (formData) => {
   };
 
-
   return (
     <Box
       display="flex"
@@ -131,9 +130,10 @@ const Login = () => {
           )}
           <p className="secondary-action">
             Don't have an account?{" "}
-            <a className="link" href="/register">
+            {/* FIXME - Issue with stub generator */}
+            {/* <a className="link" href="/register">
               Register now
-            </a>
+            </a> */}
           </p>
         </Stack>
       </Box>

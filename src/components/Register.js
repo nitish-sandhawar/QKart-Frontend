@@ -112,18 +112,13 @@ const Register = () => {
             placeholder="Re-enter your password to confirm"
             fullWidth
           />
-          {loading ? (
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <CircularProgress size={25} color="primary" />
-            </Box>
-          ) : (
-            <Button
-              className="button"
-              variant="contained"
-            >
-              Register Now
-            </Button>
-          )}
+          {/* CRIO_UNCOMMENT_START_MODULE_REGISTER */}
+          <Button
+            className="button"
+            variant="contained"
+            // CRIO_SOLUTION_START_MODULE_REGISTER
+            onClick={() => register(formData)}
+            // CRIO_SOLUTION_END_MODULE_REGISTER
           <p className="secondary-action">
             Already have an account?{" "}
           </p>

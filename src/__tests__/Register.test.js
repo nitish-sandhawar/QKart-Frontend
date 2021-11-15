@@ -2,23 +2,16 @@ import "@testing-library/jest-dom/extend-expect";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import axios from "axios";
-import { createMemoryHistory } from "history";
 import { SnackbarProvider } from "notistack";
-import { Route, Router } from "react-router";
 import { config } from "../App";
 import Register from "../components/Register";
+// import { createMemoryHistory } from "history";
+// import { Route, Router } from "react-router";
 
 jest.mock("axios");
 
 describe("Register Page", () => {
   beforeEach(() => {
-    Object.defineProperty(window, "localStorage", {
-      value: {
-        getItem: jest.fn(() => null),
-        setItem: jest.fn(() => null),
-      },
-      writable: true,
-    });
 
     const history = createMemoryHistory();
 
@@ -31,15 +24,8 @@ describe("Register Page", () => {
         }}
         preventDuplicate
       >
-        <Router history={history}>
-          <Register />
-          <Route path="/login">
-            <p>Login Page Mock</p>
-          </Route>
-          <Route path="/">
-            <p>Products Page Mock</p>
-          </Route>
-        </Router>
+
+        <Register />
       </SnackbarProvider>
     );
   });
@@ -56,29 +42,6 @@ describe("Register Page", () => {
       (img) => img.getAttribute("src") === "logo_dark.svg"
     );
     expect(logo).toBeInTheDocument();
-  });
-
-  //Header has back to explore button
-  it("should have header with 'back to explore' button", () => {
-    const exploreButton = screen.getByRole("button", {
-      name: /back to explore/i,
-    });
-    expect(exploreButton).toBeInTheDocument();
-  });
-
-  it("'back to explore' button should route to products", async () => {
-    const exploreButton = screen.getByRole("button", {
-      name: /back to explore/i,
-    });
-    userEvent.click(exploreButton);
-
-    const productPage = await screen.findByText(/products page mock/i);
-    expect(productPage).toBeInTheDocument();
-  });
-
-  it("should have 'login here' link", () => {
-    const loginHere = screen.getByRole("link", { name: /login/i });
-    expect(loginHere).toBeInTheDocument();
   });
 
   it("should throw error if username empty", async () => {

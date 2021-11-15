@@ -9,7 +9,10 @@ import Header from "./Header";
 import "./Register.css";
 
 const Register = () => {
-  const { enqueueSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
+
+  const handleInput = (e) => {
+  };
 
   /**
    * Validate the input values so that any bad or illegal values are not passed to the backend.
@@ -93,6 +96,7 @@ const Register = () => {
             name="username"
             placeholder="Enter Username"
             fullWidth
+            onChange={handleInput}
           />
           <TextField
             id="password"
@@ -100,6 +104,7 @@ const Register = () => {
             label="Password"
             name="password"
             type="password"
+            onChange={handleInput}
             helperText="Password must be atleast 6 characters length"
             fullWidth
           />
@@ -110,6 +115,7 @@ const Register = () => {
             name="confirmPassword"
             type="password"
             placeholder="Re-enter your password to confirm"
+            onChange={handleInput}
             fullWidth
           />
           {/* CRIO_UNCOMMENT_START_MODULE_REGISTER */}

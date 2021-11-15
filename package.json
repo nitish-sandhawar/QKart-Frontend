@@ -29,7 +29,7 @@
   "scripts": {
     "start": "PORT=8081 react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --json --outputFile=testReport.json",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

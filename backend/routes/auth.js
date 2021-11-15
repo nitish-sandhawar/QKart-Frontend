@@ -43,7 +43,7 @@ router.post("/register", (req, res) => {
 
     console.log(`Registered user: ${req.body.username}`);
 
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
     });
   });
@@ -74,7 +74,7 @@ router.post("/login", (req, res) => {
 
     console.log(`Logged in as user: ${req.body.username}`);
 
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
       token: token,
       username: user.username,

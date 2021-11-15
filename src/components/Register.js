@@ -9,10 +9,8 @@ import Header from "./Header";
 import "./Register.css";
 
 const Register = () => {
-  // const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const handleInput = (e) => {
-  };
 
   /**
    * Validate the input values so that any bad or illegal values are not passed to the backend.
@@ -119,7 +117,7 @@ const Register = () => {
             className="button"
             variant="contained"
             // CRIO_SOLUTION_START_MODULE_REGISTER
-            // onClick={() => register(formData)}
+            onClick={() => register(formData)}
             // CRIO_SOLUTION_END_MODULE_REGISTER
           <p className="secondary-action">
             Already have an account?{" "}

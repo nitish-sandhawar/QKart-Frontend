@@ -12,7 +12,6 @@ jest.mock("axios");
 
 describe("Register Page", () => {
   beforeEach(() => {
-    // FIXME - See if needed
     Object.defineProperty(window, "localStorage", {
       value: {
         getItem: jest.fn(() => null),

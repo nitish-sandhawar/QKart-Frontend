@@ -40,6 +40,18 @@ const Register = () => {
   const validateInput = (data) => {
   };
 
+
+  /**
+   * Definition for register handler
+   * This is the function that is called when the user clicks on the register button or submits the register form
+   * -    Call the previously defined validateInput() function and check that is returns true, i.e. the input values pass validation
+   * -    Call the previously defined performAPICall() function asynchronously and capture the returned value in a variable
+   * -    If the returned value exists,
+   *      -   Clear the input fields
+   *      -   Display a success message
+   *      -   Redirect the user to the "/login" page
+   */
+  
   /**
    * Perform the API call over the network and return the response
    *
@@ -73,19 +85,6 @@ const Register = () => {
    */
   const register = async (formData) => {
   };
-
-  /**
-   * Definition for register handler
-   * This is the function that is called when the user clicks on the register button or submits the register form
-   * -    Call the previously defined validateInput() function and check that is returns true, i.e. the input values pass validation
-   * -    Call the previously defined performAPICall() function asynchronously and capture the returned value in a variable
-   * -    If the returned value exists,
-   *      -   Clear the input fields
-   *      -   Display a success message
-   *      -   Redirect the user to the "/login" page
-   */
-
-
 
   return (
     <Box

@@ -1,8 +1,12 @@
+/* TODO: CRIO_TASK_MODULE_REGISTER - For screens of min width 768px, 
     display the form content to the right end of the screen 
+*/
 
 .content {
+  background-image: url("../assets/hero_image.png");
   background-position: center;
   background-repeat: no-repeat;
+  background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -45,10 +49,18 @@
   color: #45c09f;
 }
 
-.MuiButton-root.MuiButton-contained:hover {
-    background-color: #00845c;
+.button {
+    background-color: #00a278 !important;
 }
+
+.button:hover {
+    background-color: #00845c !important;
+}
+
 @media screen and (min-width: 768px) {
+  .content {
+    justify-content: flex-end;
+  }
   .form {
     min-width: 24rem;
   }

@@ -1,11 +1,11 @@
 .content {
-    background-image: url("../assets/login_hero.png");
+    background-image: url("../assets/hero_image.png");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     display: flex;
     justify-content: center;
-    height: 80vh;
+    height: 70vh;
 }
 
 .form {
@@ -40,6 +40,14 @@
 
 .link:visited {
     color: #45c09f;
+}
+
+.button {
+    background-color: #00a278 !important;
+}
+
+.button:hover {
+    background-color: #00845c !important;
 }
 
 @media screen and (min-width: 768px) {

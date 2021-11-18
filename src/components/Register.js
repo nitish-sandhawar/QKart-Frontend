@@ -7,6 +7,7 @@ import { config } from "../App";
 import Footer from "./Footer";
 import Header from "./Header";
 import "./Register.css";
+import { useHistory } from "react-router";
 
 const Register = () => {
   const { enqueueSnackbar } = useSnackbar();

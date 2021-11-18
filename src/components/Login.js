@@ -10,26 +10,49 @@ import Header from "./Header";
 import "./Login.css";
 
 const Login = () => {
-  const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
-  const [formData, setFormData] = useState({ username: "", password: "" });
-  const [loading, setLoading] = useState(false);
 
-  const handleInput = (e) => {
-    const [key, value] = [e.target.name, e.target.value];
-    setFormData((nextFormData) => ({ ...nextFormData, [key]: value }));
+    // TODO: CRIO_TASK_MODULE_LOGIN - Fetch the API response
+  /**
+   * Perform the API call over the network and return the response
+   * @param {{ username: string, password: string }} formData
+   *  Object with values of username, password and confirm password user entered to register
+   *
+   * API endpoint - "POST /auth/login"
+   *
+   * Example for successful response from backend:
+   * HTTP 200
+   * {
+   *      "success": true,
+   *      "token": "testtoken",
+   *      "username": "criodo",
+   *      "balance": 5000
+   * }
+   *
+   * Example for failed response from backend:
+   * HTTP 400
+   * {
+   *      "success": false,
+   *      "message": "Password is incorrect"
+   * }
+   */
+   const login = async (formData) => {
   };
 
   // TODO: CRIO_TASK_MODULE_LOGIN - Validate the input
   /**
    * Validate the input values so that any bad or illegal values are not passed to the backend.
    *
+   * @param {{ username: string, password: string }} data
+   *  Object with values of username, password and confirm password user entered to register
+   *
    * @returns {boolean}
    *    Whether validation has passed or not
    *
-   * Return false if any validation condition fails, otherwise return true.
-   * -    Check that username field is not an empty value
-   * -    Check that password field is not an empty value
+   * Return false and show warning message if any validation condition fails, otherwise return true.
+   * (NOTE: The error messages to be shown for each of these cases, are given with them)
+   * -    Check that username field is not an empty value - "Username is a required field"
+   * -    Check that password field is not an empty value - "Password is a required field"
    */
   const validateInput = (data) => {
   };
@@ -53,41 +76,6 @@ const Login = () => {
   const persistLogin = (token, username, balance) => {
   };
 
-  // TODO: CRIO_TASK_MODULE_LOGIN - Fetch the API response
-  /**
-   * Perform the API call over the network and return the response
-   *
-   * @returns {{ success: boolean, token: string, username: string, balance: number }|undefined}
-   *    The response JSON object
-   *
-   * -    Set the loading state variable to true
-   * -    Perform the API call via a fetch call: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
-   *      - The call must be made asynchronously using Promises or async/await
-   *      - The call must handle any errors thrown from the fetch call
-   *      - Parse the result as JSON
-   * -    Set the loading state variable to false once the call has completed
-   * -    Call the validateResponse(errored, response) function defined previously
-   * -    If response passes validation, return the response object
-   *
-   * Example for successful response from backend:
-   * HTTP 200
-   * {
-   *      "success": true,
-   *      "token": "testtoken",
-   *      "username": "criodo",
-   *      "balance": 5000
-   * }
-   *
-   * Example for failed response from backend:
-   * HTTP 400
-   * {
-   *      "success": false,
-   *      "message": "Password is incorrect"
-   * }
-   */
-  const login = async (formData) => {
-  };
-
   return (
     <Box
       display="flex"
@@ -98,43 +86,6 @@ const Login = () => {
       <Header hasHiddenAuthButtons />
       <Box className="content">
         <Stack spacing={2} className="form">
-          <h2 className="title">Login</h2>
-          <TextField
-            id="username"
-            label="Username"
-            variant="outlined"
-            title="Username"
-            name="username"
-            placeholder="Enter Username"
-            fullWidth
-            onChange={handleInput}
-          />
-          <TextField
-            id="password"
-            variant="outlined"
-            label="Password"
-            name="password"
-            type="password"
-            placeholder="Enter a password"
-            onChange={handleInput}
-            fullWidth
-          />
-          {loading ? (
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <CircularProgress size={25} color="primary" />
-            </Box>
-          ) : (
-            <Button variant="contained" onClick={() => login(formData)}>
-              Login to QKart
-            </Button>
-          )}
-          <p className="secondary-action">
-            Don't have an account?{" "}
-            {/* FIXME - Issue with stub generator */}
-            {/* <a className="link" href="/register">
-              Register now
-            </a> */}
-          </p>
         </Stack>
       </Box>
       <Footer />

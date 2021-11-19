@@ -185,19 +185,19 @@ describe("Register Page", () => {
     expect(alert).toHaveTextContent(/do not match/i);
   });
 
-  it("should redirect to login after success", async () => {
-    const request = {
-      username: "crio.do",
-      password: "learnbydoing",
-    };
+  // it("should redirect to login after success", async () => {
+  //   const request = {
+  //     username: "crio.do",
+  //     password: "learnbydoing",
+  //   };
 
-    const promise = inputFormAndButtonClick(request);
+  //   const promise = inputFormAndButtonClick(request);
 
-    await act(() => promise);
+  //   await act(() => promise);
 
-    const loginPage = await screen.findByText(/login page mock/i);
-    expect(loginPage).toBeInTheDocument();
-  });
+  //   const loginPage = await screen.findByText(/login page mock/i);
+  //   expect(loginPage).toBeInTheDocument();
+  // });
 
   //Header has back to explore button
   it("should have header with 'back to explore' button", () => {
@@ -207,15 +207,15 @@ describe("Register Page", () => {
     expect(exploreButton).toBeInTheDocument();
   });
 
-  it("'back to explore' button should route to products", async () => {
-    const exploreButton = screen.getByRole("button", {
-      name: /back to explore/i,
-    });
-    userEvent.click(exploreButton);
+  // it("'back to explore' button should route to products", async () => {
+  //   const exploreButton = screen.getByRole("button", {
+  //     name: /back to explore/i,
+  //   });
+  //   userEvent.click(exploreButton);
 
-    const productPage = await screen.findByText(/products page mock/i);
-    expect(productPage).toBeInTheDocument();
-  });
+  //   const productPage = await screen.findByText(/products page mock/i);
+  //   expect(productPage).toBeInTheDocument();
+  // });
 
   it("should have 'login here' link", () => {
     const loginHere = screen.getByRole("link", { name: /login/i });

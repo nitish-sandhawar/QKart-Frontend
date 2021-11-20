@@ -3,53 +3,26 @@ import {
   CircularProgress,
   Grid,
   InputAdornment,
-  TextField
+  TextField,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { config } from "../App";
-import Cart from "./Cart";
 import Footer from "./Footer";
 import Header from "./Header";
-import ProductCard from "./ProductCard";
 import "./Products.css";
 
-export const generateCartItemsFrom = (cartData, productsData) => {
-  if (!cartData) return;
 
-  const nextCart = cartData.map((item) => ({
-    ...item,
-    ...productsData.find((product) => item.productId === product._id),
-  }));
-
-  return nextCart;
-};
 
 const Products = () => {
-  const token = localStorage.getItem("token");
-  const { enqueueSnackbar } = useSnackbar();
-  const [debounceTimeout, setDebounceTimeout] = useState(0);
-  const [isLoading, setLoading] = useState(false);
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [items, setItems] = useState([]);
 
+  // TODO: CRIO_TASK_MODULE_PRODUCTS - Fetch products data and store it
   /**
-   * Perform the API call over the network and return the response
+   * Make API call to get the products list and store it to display the products
    *
-   * @returns {Product[]|undefined}
-   *    The response JSON object
-   *
-   * -    Set the isLoading state variable to true
-   * -    Perform the API call via a fetch call: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
-   * -    The call must be made asynchronously using Promises or async/await
-   * -    The call must handle any errors thrown from the fetch call
-   * -    Parse the result as JSON
-   * -    Set the isLoading state variable to false once the call has completed
-   * -    Call the validateResponse(errored, response) function defined previously
-   * -    If response passes validation, return the response object
+   * API endpoint - "GET /products"
    *
    * Example for successful response from backend:
    * HTTP 200
@@ -80,152 +53,38 @@ const Products = () => {
    * }
    */
   const performAPICall = async () => {
-    setLoading(true);
-
-    try {
-      const response = await axios.get(`${config.endpoint}/products`);
-
-      setLoading(false);
-
-        // NOTE - Do we need two product arrays now that we have search from backend?
-        // Needed for Cart to be able to populate Product data based on Cart returned (from Product ID)
-        setProducts(response.data);
-        setFilteredProducts(response.data);
-      } catch (e) {
-        setLoading(false);
-
-      if (e.response && e.response.status === 500) {
-        enqueueSnackbar(e.response.data.message, { variant: "error" });
-        return null;
-      } else {
-        enqueueSnackbar(
-          "Could not fetch products. Check that the backend is running, reachable and returns valid JSON.",
-          {
-            variant: "error",
-          }
-        );
-      }
-    }
   };
 
-  // TODO: CRIO_TASK_MODULE_PRODUCTS - Implement the search() method
+  // TODO: CRIO_TASK_MODULE_PRODUCTS - Implement search logic
   /**
    * Definition for search handler
-   * This is the function that is called when the user clicks on the search button or the debounce timer is executed
+   * This is the function that is called on adding new search keys
    *
    * @param {string} text
    *    Text user types in the search bar. To filter the displayed products based on this text.
    *
-   * -    Update filteredProducts state to show a filtered **subset of the products class property** based on the search text
-   * -    The search filtering should be done on the name and category fields of the product
-   * -    The search filtering should not take in to account the letter case of the search text or name/category fields
+   * API endpoint - "GET /products/search?value=<search-query>"
+   *
    */
   const performSearch = async (text) => {
   };
 
-  // TODO: CRIO_TASK_MODULE_PRODUCTS - Implement the debounceSearch() method
+  // TODO: CRIO_TASK_MODULE_PRODUCTS - Optimise API calls with debounce search implementation
   /**
    * Definition for debounce handler
-   * This is the function that is called whenever the user types or changes the text in the searchbar field
-   * We need to make sure that the search handler isn't constantly called for every key press, so we debounce the logic
-   * i.e. we make sure that only after a specific amount of time passes after the final keypress (with no other keypress event happening in between), we run the required function
+   * With debounce, this is the function to be called whenever the user types text in the searchbar field
    *
    * @param {{ target: { value: string } }} event
    *    JS event object emitted from the search input field
    *
-   * -    Obtain the search query text from the JS event object
-   * -    If the debounceTimeout class property is already set, use clearTimeout to remove the timer from memory: https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/clearTimeout
-   * -    Call setTimeout to start a new timer that calls below defined search() method after 300ms and store the return value in the debounceTimeout class property: https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout
+   * @param {NodeJS.Timeout} debounceTimeout
+   *    Timer id set for the previous debounce call
+   *
    */
   const debounceSearch = (event, debounceTimeout) => {
   };
 
-  const fetchCart = async (token) => {
-    if (!token) return;
 
-    try {
-      const response = await axios.get(`${config.endpoint}/cart`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
-    } catch {
-      enqueueSnackbar(
-        "Could not fetch cart details. Check that the backend is running, reachable and returns valid JSON.",
-        {
-          variant: "error",
-        }
-      );
-      return null;
-    }
-  };
-
-  const updateCartItems = async (token, products) => {
-    const cartData = await fetchCart(token);
-    const cartItems = generateCartItemsFrom(cartData, products);
-    setItems(cartItems);
-  };
-
-  const isItemInCart = (items, productId) => {
-    return items.findIndex((item) => item.productId === productId) !== -1;
-  };
-
-  const addToCart = async (
-    token,
-    items,
-    products,
-    productId,
-    qty,
-    options = { preventDuplicate: false }
-  ) => {
-    if (options.preventDuplicate && isItemInCart(items, productId)) {
-      enqueueSnackbar(
-        "Item already in cart. Use the cart sidebar to update quantity or remove item.",
-        {
-          variant: "warning",
-        }
-      );
-      return;
-    }
-
-    try {
-      await axios.post(
-        `${config.endpoint}/cart`,
-        { productId, qty },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      await updateCartItems(token, products);
-    } catch (e) {
-      if (e.response) {
-        enqueueSnackbar(e.response.data.message, { variant: "error" });
-      } else {
-        enqueueSnackbar(
-          "Could not fetch products. Check that the backend is running, reachable and returns valid JSON.",
-          {
-            variant: "error",
-          }
-        );
-      }
-    }
-  };
-
-  useEffect(() => {
-    performAPICall();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    fetchCart(token)
-      .then((cartData) => generateCartItemsFrom(cartData, products))
-      .then((cartItems) => setItems(cartItems));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [products]);
 
   return (
     <div>
@@ -234,6 +93,7 @@ const Products = () => {
 
       </Header>
 
+      {/* Search view for mobiles */}
       <TextField
         className="search-mobile"
         size="small"
@@ -247,66 +107,7 @@ const Products = () => {
         }}
         placeholder="Search for items/categories"
         name="search"
-        onChange={debounceSearch}
       />
-
-      <Grid container>
-        <Grid item xs={12} md={token && products.length ? 9 : 12}>
-          <Box className="hero">
-            <p className="hero-heading">
-              India’s <span className="hero-highlight">FASTEST DELIVERY</span>{" "}
-              to your door step
-            </p>
-          </Box>
-
-          {isLoading ? (
-            <Box className="loading">
-              <CircularProgress />
-              <h4>Loading Products...</h4>
-            </Box>
-          ) : (
-            <Grid container marginY="1rem" paddingX="1rem" spacing={2}>
-              {filteredProducts.length ? (
-                filteredProducts.map((product) => (
-                  <Grid item xs={6} md={3} key={product._id}>
-                    <ProductCard
-                      product={product}
-                      handleAddToCart={async () => {
-                        await addToCart(
-                          token,
-                          items,
-                          products,
-                          product._id,
-                          1,
-                          {
-                            preventDuplicate: true,
-                          }
-                        );
-                      }}
-                    />
-                  </Grid>
-                ))
-              ) : (
-                <Box className="loading">
-                  <SentimentDissatisfied color="action" />
-                  <h4 style={{ color: "#636363" }}>No products found</h4>
-                </Box>
-              )}
-            </Grid>
-          )}
-        </Grid>
-
-        {token ? (
-          <Grid item xs={12} md={3} bgcolor="#E9F5E1">
-            <Cart
-              products={products}
-              items={items}
-              handleQuantity={addToCart}
-            />
-          </Grid>
-        ) : null}
-      </Grid>
-
       <Footer />
     </div>
   );

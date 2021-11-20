@@ -7,57 +7,20 @@ import { config } from "../App";
 import Footer from "./Footer";
 import Header from "./Header";
 import "./Register.css";
-import { useHistory } from "react-router-dom";
 
 const Register = () => {
   const { enqueueSnackbar } = useSnackbar();
 
 
-  // TODO: CRIO_TASK_MODULE_LOGIN - Implement user input validation logic
-  /**
-   * Validate the input values so that any bad or illegal values are not passed to the backend.
-   *
-   * @returns {boolean}
-   *    Whether validation has passed or not
-   *
-   * Return false if any validation condition fails, otherwise return true.
-   * -    Check that username field is not an empty value
-   * -    Check that username field is not less than 6 characters in length
-   * -    Check that username field is not more than 32 characters in length
-   * -    Check that password field is not an empty value
-   * -    Check that password field is not less than 6 characters in length
-   * -    Check that password field is not more than 32 characters in length
-   * -    Check that confirmPassword field has the same value as password field
-   */
-
+  // TODO: CRIO_TASK_MODULE_REGISTER - Implement the register function
   /**
    * Definition for register handler
-   * This is the function that is called when the user clicks on the register button or submits the register form
-   * -    Call the previously defined validateInput() function and check that is returns true, i.e. the input values pass validation
-   * -    Call the previously defined performAPICall() function asynchronously and capture the returned value in a variable
-   * -    If the returned value exists,
-   *      -   Clear the input fields
-   *      -   Display a success message
-   *      -   Redirect the user to the "/login" page
-   */
-
-  /**
-   * Perform the API call over the network and return the response
+   * - Function to be called when the user clicks on the register button or submits the register form
    *
-   * @returns {{ success: boolean }|undefined}
-   *     The response JSON object
+   * @param {{ username: string, password: string, confirmPassword: string }} formData
+   *  Object with values of username, password and confirm password user entered to register
    *
-   * -    Set the loading state variable to true
-   * -    Perform the API call via a fetch call: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
-   * -    The call must be made asynchronously using Promises or async/await
-   * -    The call must handle any errors thrown from the fetch call
-   * -    Parse the result as JSON
-   * -    Set the loading state variable to false once the call has completed
-   * -    *** If in Milestone 1 ***,
-   * -      return the response JSON object
-   * -    *** If in Milestone 2 ***,
-   * -      Call the validateResponse(errored, response) function defined previously
-   * -        If response passes validation, return the response object
+   * API endpoint - "POST /auth/register"
    *
    * Example for successful response from backend for the API call:
    * HTTP 200
@@ -73,6 +36,27 @@ const Register = () => {
    * }
    */
   const register = async (formData) => {
+  };
+
+  // TODO: CRIO_TASK_MODULE_REGISTER - Implement user input validation logic
+  /**
+   * Validate the input values so that any bad or illegal values are not passed to the backend.
+   *
+   * @param {{ username: string, password: string, confirmPassword: string }} data
+   *  Object with values of username, password and confirm password user entered to register
+   *
+   * @returns {boolean}
+   *    Whether validation has passed or not
+   *
+   * Return false if any validation condition fails, otherwise return true.
+   * (NOTE: The error messages to be shown for each of these cases, are given with them)
+   * -    Check that username field is not an empty value - "Username is a required field"
+   * -    Check that username field is not less than 6 characters in length - "Username must be at least 6 characters"
+   * -    Check that password field is not an empty value - "Password is a required field"
+   * -    Check that password field is not less than 6 characters in length - "Password must be at least 6 characters"
+   * -    Check that confirmPassword field has the same value as password field - Passwords do not match
+   */
+  const validateInput = (data) => {
   };
 
   return (
@@ -112,15 +96,14 @@ const Register = () => {
             type="password"
             fullWidth
           />
-          {/* CRIO_UNCOMMENT_START_MODULE_REGISTER */}
-          {/* <Button
-            className="button"
-            variant="contained"
-            // CRIO_SOLUTION_START_MODULE_REGISTER
-            onClick={() => register(formData)}
-            // CRIO_SOLUTION_END_MODULE_REGISTER
+          <Button className="button" variant="contained">
+            Register Now
+          </Button>
           <p className="secondary-action">
             Already have an account?{" "}
+            <a className="link" href="#">
+              Login here
+            </a>
           </p>
         </Stack>
       </Box>

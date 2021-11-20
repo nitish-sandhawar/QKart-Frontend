@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import axios from "axios";
 import { createMemoryHistory } from "history";
 import { SnackbarProvider } from "notistack";
-import { Route, Router } from "react-router";
+import { Route, Router } from "react-router-dom";
 import { config } from "../App";
 import Login from "../components/Login";
 

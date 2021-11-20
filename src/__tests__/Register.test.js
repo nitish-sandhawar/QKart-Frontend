@@ -5,8 +5,8 @@ import axios from "axios";
 import { SnackbarProvider } from "notistack";
 import { config } from "../App";
 import Register from "../components/Register";
-// import { createMemoryHistory } from "history";
-// import { Route, Router } from "react-router";
+import { createMemoryHistory } from "history";
+import { Route, Router } from "react-router-dom";
 
 jest.mock("axios");
 

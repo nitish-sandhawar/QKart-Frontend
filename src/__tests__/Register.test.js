@@ -208,14 +208,13 @@ describe("Register Page", () => {
     await act(() => promise);
 
     expect(history.location.pathname).toBe("/login");
-
-    it("'back to explore' button should route to products", async () => {
+  });
+  it("'back to explore' button should route to products", async () => {
       const exploreButton = screen.getByRole("button", {
         name: /back to explore/i,
       });
       userEvent.click(exploreButton);
 
       expect(history.location.pathname).toBe("/");
-    });
   });
 });

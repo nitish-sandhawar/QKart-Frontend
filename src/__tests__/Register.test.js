@@ -2,18 +2,24 @@ import "@testing-library/jest-dom/extend-expect";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import axios from "axios";
+import { createMemoryHistory } from "history";
 import { SnackbarProvider } from "notistack";
+import { Router } from "react-router-dom";
 import { config } from "../App";
 import Register from "../components/Register";
-import { createMemoryHistory } from "history";
-import { Route, Router } from "react-router-dom";
 
 jest.mock("axios");
 
 describe("Register Page", () => {
+  const history = createMemoryHistory();
   beforeEach(() => {
-
-    const history = createMemoryHistory();
+    Object.defineProperty(window, "localStorage", {
+      value: {
+        getItem: jest.fn(() => null),
+        setItem: jest.fn(() => null),
+      },
+      writable: true,
+    });
 
     render(
       <SnackbarProvider
@@ -24,8 +30,9 @@ describe("Register Page", () => {
         }}
         preventDuplicate
       >
-
-        <Register />
+        <Router history={history}>
+          <Register />
+        </Router>
       </SnackbarProvider>
     );
   });
@@ -42,6 +49,19 @@ describe("Register Page", () => {
       (img) => img.getAttribute("src") === "logo_dark.svg"
     );
     expect(logo).toBeInTheDocument();
+  });
+
+  //Header has back to explore button
+  it("should have header with 'back to explore' button", () => {
+    const exploreButton = screen.getByRole("button", {
+      name: /back to explore/i,
+    });
+    expect(exploreButton).toBeInTheDocument();
+  });
+
+  it("should have 'login here' link", () => {
+    const loginHere = screen.getByRole("link", { name: /login/i });
+    expect(loginHere).toBeInTheDocument();
   });
 
   it("should throw error if username empty", async () => {
@@ -177,4 +197,25 @@ describe("Register Page", () => {
     expect(alert).toHaveTextContent(/success/i);
   });
 
+  it("should redirect to login after success", async () => {
+    const request = {
+      username: "crio.do",
+      password: "learnbydoing",
+    };
+
+    const promise = inputFormAndButtonClick(request);
+
+    await act(() => promise);
+
+    expect(history.location.pathname).toBe("/login");
+
+    it("'back to explore' button should route to products", async () => {
+      const exploreButton = screen.getByRole("button", {
+        name: /back to explore/i,
+      });
+      userEvent.click(exploreButton);
+
+      expect(history.location.pathname).toBe("/");
+    });
+  });
 });

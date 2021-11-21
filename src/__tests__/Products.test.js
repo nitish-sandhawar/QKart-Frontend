@@ -3,13 +3,13 @@ import {
   act,
   render,
   screen,
-  waitForElementToBeRemoved,
+  waitForElementToBeRemoved
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import axios from "axios";
 import { createMemoryHistory } from "history";
 import { SnackbarProvider } from "notistack";
-import { Route, Router } from "react-router-dom";
+import { Router } from "react-router-dom";
 import { config } from "../App";
 import Products from "../components/Products";
 
@@ -30,12 +30,6 @@ describe("Products Page", () => {
     >
       <Router history={history}>
         <Products />
-        <Route path="/login">
-          <p>Login Page Mock</p>
-        </Route>
-        <Route path="/register">
-          <p>Register Page Mock</p>
-        </Route>
       </Router>
     </SnackbarProvider>
   );
@@ -88,6 +82,19 @@ describe("Products Page", () => {
     expect(logo).toBeInTheDocument();
   });
 
+  it("should have login button route to login page", async () => {
+    const loginBtn = screen.getByRole("button", { name: /login/i });
+    userEvent.click(loginBtn);
+
+    expect(history.location.pathname).toBe("/login");
+  });
+
+  it("should have register button route to register page", async () => {
+    const registerBtn = screen.getByRole("button", { name: /register/i });
+    userEvent.click(registerBtn);
+
+    expect(history.location.pathname).toBe("/register");
+  });
 
   it("should have a search bar", () => {
     const searchInput = screen.getAllByPlaceholderText(/search/i)[0];
@@ -313,12 +320,6 @@ describe("Products Page: Logged in", () => {
     >
       <Router history={history}>
         <Products />
-        <Route path="/login">
-          <p>Login Page Mock</p>
-        </Route>
-        <Route path="/register">
-          <p>Register Page Mock</p>
-        </Route>
       </Router>
     </SnackbarProvider>
   );

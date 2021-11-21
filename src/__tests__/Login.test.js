@@ -4,13 +4,15 @@ import userEvent from "@testing-library/user-event";
 import axios from "axios";
 import { createMemoryHistory } from "history";
 import { SnackbarProvider } from "notistack";
-import { Route, Router } from "react-router-dom";
+import { Router } from "react-router-dom";
 import { config } from "../App";
 import Login from "../components/Login";
 
 jest.mock("axios");
 
 describe("Login Page", () => {
+  const history = createMemoryHistory();
+
   beforeEach(() => {
     Object.defineProperty(window, "localStorage", {
       value: {
@@ -19,8 +21,6 @@ describe("Login Page", () => {
       },
       writable: true,
     });
-
-    const history = createMemoryHistory();
 
     render(
       <SnackbarProvider
@@ -33,9 +33,6 @@ describe("Login Page", () => {
       >
         <Router history={history}>
           <Login />
-          <Route path="/">
-            <p>Products Page Mock</p>
-          </Route>
         </Router>
       </SnackbarProvider>
     );
@@ -63,15 +60,14 @@ describe("Login Page", () => {
     expect(exploreButton).toBeInTheDocument();
   });
 
-  // it("'back to explore' button should route to products", async () => {
-  //   const exploreButton = screen.getByRole("button", {
-  //     name: /back to explore/i,
-  //   });
-  //   userEvent.click(exploreButton);
+  it("'back to explore' button should route to products", async () => {
+    const exploreButton = screen.getByRole("button", {
+      name: /back to explore/i,
+    });
+    userEvent.click(exploreButton);
 
-  //   const productPage = await screen.findByText(/products page mock/i);
-  //   expect(productPage).toBeInTheDocument();
-  // });
+    expect(history.location.pathname).toBe("/");
+  });
 
   it("should have register now link", () => {
     const registerNow = screen.getByRole("link", { name: /register now/i });
@@ -193,17 +189,16 @@ describe("Login Page", () => {
     );
   });
 
-  // it("should redirect to products page after success", async () => {
-  //   const request = {
-  //     username: "crio.do",
-  //     password: "learnbydoing",
-  //   };
+  it("should redirect to products page after success", async () => {
+    const request = {
+      username: "crio.do",
+      password: "learnbydoing",
+    };
 
-  //   const promise = inputFormAndButtonClick(request);
+    const promise = inputFormAndButtonClick(request);
 
-  //   await act(() => promise);
+    await act(() => promise);
 
-  //   const page = await screen.findByText(/products page mock/i);
-  //   expect(page).toBeInTheDocument();
-  // });
+    expect(history.location.pathname).toBe("/");
+  });
 });

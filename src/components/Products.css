@@ -13,9 +13,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+}
+
+.product-grid {
   width: 100%;
 }
+
 .hero-heading {
   color: #fff;
   font-size: 1.5rem;

@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { config } from "../App";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -12,9 +12,9 @@ import "./Login.css";
 const Login = () => {
   const { enqueueSnackbar } = useSnackbar();
 
-    // TODO: CRIO_TASK_MODULE_LOGIN - Fetch the API response
+  // TODO: CRIO_TASK_MODULE_LOGIN - Fetch the API response
   /**
-   * Perform the API call over the network and return the response
+   * Perform the Login API call
    * @param {{ username: string, password: string }} formData
    *  Object with values of username, password and confirm password user entered to register
    *
@@ -35,8 +35,9 @@ const Login = () => {
    *      "success": false,
    *      "message": "Password is incorrect"
    * }
+   *
    */
-   const login = async (formData) => {
+  const login = async (formData) => {
   };
 
   // TODO: CRIO_TASK_MODULE_LOGIN - Validate the input

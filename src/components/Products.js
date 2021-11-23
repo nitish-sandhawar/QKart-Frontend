@@ -15,8 +15,9 @@ import Header from "./Header";
 import "./Products.css";
 
 
-
 const Products = () => {
+
+
 
   return (
     <div>
@@ -24,33 +25,16 @@ const Products = () => {
 
       </Header>
 
-      <TextField
-        className="search-mobile"
-        size="small"
-        fullWidth
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <Search color="primary" />
-            </InputAdornment>
-          ),
-        }}
-        placeholder="Search for items/categories"
-        name="search"
-      />
-      <Grid container>
-        <Grid
-          item
-          className="product-grid"
-        >
-          <Box className="hero">
-            <p className="hero-heading">
-              India’s <span className="hero-highlight">FASTEST DELIVERY</span>{" "}
-              to your door step
-            </p>
-          </Box>
-        </Grid>
-      </Grid>
+       <Grid container>
+         <Grid item className="product-grid">
+           <Box className="hero">
+             <p className="hero-heading">
+               India’s <span className="hero-highlight">FASTEST DELIVERY</span>{" "}
+               to your door step
+             </p>
+           </Box>
+         </Grid>
+       </Grid>
       <Footer />
     </div>
   );

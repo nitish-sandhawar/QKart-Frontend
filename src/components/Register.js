@@ -7,12 +7,12 @@ import { config } from "../App";
 import Footer from "./Footer";
 import Header from "./Header";
 import "./Register.css";
+import { useHistory, Link } from "react-router-dom";
 
 const Register = () => {
   const { enqueueSnackbar } = useSnackbar();
 
 
-  // TODO: CRIO_TASK_MODULE_REGISTER - Implement the register function
   /**
    * Definition for register handler
    * - Function to be called when the user clicks on the register button or submits the register form
@@ -23,7 +23,7 @@ const Register = () => {
    * API endpoint - "POST /auth/register"
    *
    * Example for successful response from backend for the API call:
-   * HTTP 200
+   * HTTP 201
    * {
    *      "success": true,
    * }
@@ -38,7 +38,6 @@ const Register = () => {
   const register = async (formData) => {
   };
 
-  // TODO: CRIO_TASK_MODULE_REGISTER - Implement user input validation logic
   /**
    * Validate the input values so that any bad or illegal values are not passed to the backend.
    *
@@ -87,6 +86,7 @@ const Register = () => {
             type="password"
             helperText="Password must be atleast 6 characters length"
             fullWidth
+            placeholder="Enter a password with minimum 6 characters"
           />
           <TextField
             id="confirmPassword"
@@ -96,14 +96,8 @@ const Register = () => {
             type="password"
             fullWidth
           />
-          <Button className="button" variant="contained">
-            Register Now
-          </Button>
           <p className="secondary-action">
             Already have an account?{" "}
-            <a className="link" href="#">
-              Login here
-            </a>
           </p>
         </Stack>
       </Box>

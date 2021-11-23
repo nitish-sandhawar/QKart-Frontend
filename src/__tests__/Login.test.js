@@ -160,7 +160,12 @@ describe("Login Page", () => {
       (req) => req.url === `${config.endpoint}/auth/login`
     );
 
-    expect(loginPostCall.data).toBe(JSON.stringify(request));
+    expect(JSON.parse(loginPostCall.data)).toEqual(
+      expect.objectContaining({
+        username: request.username,
+        password: request.password,
+      })
+    );
   });
 
   it("should show success alert if request succeeds", async () => {

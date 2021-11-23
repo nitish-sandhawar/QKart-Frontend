@@ -16,7 +16,7 @@ mock
     username: "crio.do",
     password: "learnbydoing",
   })
-  .reply(200, { success: true });
+  .reply(201, { success: true });
 
 mock
   .onPost(`${config.endpoint}/auth/register`, {

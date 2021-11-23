@@ -3,7 +3,7 @@ import {
   act,
   render,
   screen,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import axios from "axios";
@@ -65,7 +65,6 @@ describe("Products Page", () => {
 
     render(ProductDOMTree(history));
 
-    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
   });
 
   it("should have a header has logo with Link", async () => {

@@ -7,21 +7,36 @@ import { SnackbarProvider } from "notistack";
 import { Router } from "react-router-dom";
 import { config } from "../App";
 import Login from "../components/Login";
+import MockAdapter from "axios-mock-adapter";
 
-jest.mock("axios");
+const mock = new MockAdapter(axios);
+
+mock
+  .onPost(`${config.endpoint}/auth/login`, {
+    username: "crio.do",
+    password: "learnbydoing",
+  })
+  .reply(200, {
+    success: true,
+    token: "testtoken",
+    username: "crio.do",
+    balance: 5000,
+  });
+
+mock
+  .onPost(`${config.endpoint}/auth/login`, {
+    username: "crio.do",
+    password: "wrongpassword",
+  })
+  .reply(400, {
+    success: false,
+    message: "Password is incorrect",
+  });
 
 describe("Login Page", () => {
   const history = createMemoryHistory();
 
   beforeEach(() => {
-    Object.defineProperty(window, "localStorage", {
-      value: {
-        getItem: jest.fn(() => null),
-        setItem: jest.fn(() => null),
-      },
-      writable: true,
-    });
-
     render(
       <SnackbarProvider
         maxSnack={1}
@@ -40,12 +55,16 @@ describe("Login Page", () => {
 
   //Login Form Has Heading
   it("should have a Login form title", () => {
+    // Matches by h1-h6 tags
     const heading = screen.getByRole("heading", { name: "Login" });
     expect(heading).toBeInTheDocument();
   });
 
   it("should have a header has logo with Link", () => {
+    // Matches by <img> tag role -> img
     const images = screen.getAllByRole("img");
+
+    // Find <img> with matching src attribute
     const logo = images.find(
       (img) => img.getAttribute("src") === "logo_dark.svg"
     );
@@ -54,6 +73,7 @@ describe("Login Page", () => {
 
   //Header has back to explore button
   it("should have header with back to explore button", () => {
+    // Matches by <button> with text "Back To Explore" - case insensitive
     const exploreButton = screen.getByRole("button", {
       name: /back to explore/i,
     });
@@ -61,6 +81,7 @@ describe("Login Page", () => {
   });
 
   it("'back to explore' button should route to products", async () => {
+    // Matches by <button> with text "Back To Explore" - case insensitive
     const exploreButton = screen.getByRole("button", {
       name: /back to explore/i,
     });
@@ -70,6 +91,7 @@ describe("Login Page", () => {
   });
 
   it("should have register now link", () => {
+    // Matches by <a> with href and text "Register now" - case insensitive
     const registerNow = screen.getByRole("link", { name: /register now/i });
     expect(registerNow).toBeInTheDocument();
   });
@@ -90,35 +112,14 @@ describe("Login Page", () => {
     expect(alert).toBeInTheDocument();
   });
 
-  const inputFormAndButtonClick = (req) => {
-    const response = {
-      data: {
-        success: true,
-        token: "testtoken",
-        username: "crio.do",
-        balance: 5000,
-      },
-      status: 200,
-    };
-
-    const promise = Promise.resolve(response);
-    axios.post.mockImplementationOnce(() => promise);
-
-    const inputs = screen.getAllByRole("textbox");
-    const usernameInput = inputs.find(
-      (input) => input.getAttribute("name").toLowerCase() === "username"
-    );
+  const performFormInput = (req) => {
+    const usernameInput = screen.getByLabelText(/username/i);
     const passwordInput = screen.getByLabelText(/password/i);
 
     userEvent.type(usernameInput, req.username);
     userEvent.type(passwordInput, req.password);
 
-    expect(usernameInput).toHaveValue(req.username);
-    expect(passwordInput).toHaveValue(req.password);
-
-    userEvent.click(screen.getByText(/login to qkart/i));
-
-    return promise;
+    return { usernameInput, passwordInput };
   };
 
   it("should send a POST request with axios", async () => {
@@ -127,13 +128,18 @@ describe("Login Page", () => {
       password: "learnbydoing",
     };
 
-    const promise = inputFormAndButtonClick(request);
+    const { usernameInput, passwordInput } = performFormInput(request);
+    expect(usernameInput).toHaveValue(request.username);
+    expect(passwordInput).toHaveValue(request.password);
 
-    //Waiting for the promise to be resolved before actually testing it.
-    //Ref: https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning
-    await act(() => promise);
+    await act(async () => {
+      userEvent.click(screen.getByText(/login to qkart/i));
+    });
 
-    expect(axios.post).toHaveBeenCalledTimes(1);
+    const loginPostCall = mock.history.post.find(
+      (req) => req.url === `${config.endpoint}/auth/login`
+    );
+    expect(loginPostCall).toBeTruthy();
   });
 
   it("should send a POST request to server with correct arguments", async () => {
@@ -142,16 +148,19 @@ describe("Login Page", () => {
       password: "learnbydoing",
     };
 
-    const promise = inputFormAndButtonClick(request);
+    const { usernameInput, passwordInput } = performFormInput(request);
+    expect(usernameInput).toHaveValue(request.username);
+    expect(passwordInput).toHaveValue(request.password);
 
-    //Waiting for the promise to be resolved before actually testing it.
-    //Ref: https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning
-    await act(() => promise);
+    await act(async () => {
+      userEvent.click(screen.getByText(/login to qkart/i));
+    });
 
-    expect(axios.post).toHaveBeenCalledWith(
-      `${config.endpoint}/auth/login`,
-      request
+    const loginPostCall = mock.history.post.find(
+      (req) => req.url === `${config.endpoint}/auth/login`
     );
+
+    expect(loginPostCall.data).toBe(JSON.stringify(request));
   });
 
   it("should show success alert if request succeeds", async () => {
@@ -159,12 +168,31 @@ describe("Login Page", () => {
       username: "crio.do",
       password: "learnbydoing",
     };
-    const promise = inputFormAndButtonClick(request);
 
-    await act(() => promise);
+    performFormInput(request);
+
+    await act(async () => {
+      userEvent.click(screen.getByText(/login to qkart/i));
+    });
 
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(/logged in/i);
+  });
+
+  it("should show error alert if request fails", async () => {
+    const request = {
+      username: "crio.do",
+      password: "wrongpassword",
+    };
+
+    performFormInput(request);
+
+    await act(async () => {
+      userEvent.click(screen.getByText(/login to qkart/i));
+    });
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(/password is incorrect/i);
   });
 
   it("should store values in local storage if request succeeds", async () => {
@@ -173,11 +201,12 @@ describe("Login Page", () => {
       password: "learnbydoing",
     };
 
-    const promise = inputFormAndButtonClick(request);
+    performFormInput(request);
 
-    await act(() => promise);
+    await act(async () => {
+      userEvent.click(screen.getByText(/login to qkart/i));
+    });
 
-    expect(window.localStorage.setItem).toHaveBeenCalledTimes(3);
     expect(window.localStorage.setItem).toHaveBeenCalledWith(
       "username",
       "crio.do"
@@ -195,9 +224,11 @@ describe("Login Page", () => {
       password: "learnbydoing",
     };
 
-    const promise = inputFormAndButtonClick(request);
+    performFormInput(request);
 
-    await act(() => promise);
+    await act(async () => {
+      userEvent.click(screen.getByText(/login to qkart/i));
+    });
 
     expect(history.location.pathname).toBe("/");
   });

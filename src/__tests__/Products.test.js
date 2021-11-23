@@ -12,8 +12,33 @@ import { SnackbarProvider } from "notistack";
 import { Router } from "react-router-dom";
 import { config } from "../App";
 import Products from "../components/Products";
+import MockAdapter from "axios-mock-adapter";
 
-jest.mock("axios");
+const mock = new MockAdapter(axios);
+
+const productsResponse = [
+  {
+    name: "Tan Leatherette Weekender Duffle",
+    category: "Fashion",
+    cost: 150,
+    rating: 4,
+    image:
+      "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/ff071a1c-1099-48f9-9b03-f858ccc53832.png",
+    _id: "PmInA797xJhMIPti",
+  },
+  {
+    name: "The Minimalist Slim Leather Watch",
+    category: "Electronics",
+    cost: 60,
+    rating: 5,
+    image:
+      "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/5b478a4a-bf81-467c-964c-1881887799b7.png",
+    _id: "TwMM4OAhmK0VQ93S",
+  },
+];
+
+mock.onGet(`${config.endpoint}/products`).reply(200, productsResponse);
+
 jest.useFakeTimers();
 
 describe("Products Page", () => {
@@ -38,38 +63,7 @@ describe("Products Page", () => {
     // https://github.com/clarkbw/jest-localstorage-mock/issues/125
     jest.clearAllMocks();
 
-    const response = {
-      data: [
-        {
-          name: "Tan Leatherette Weekender Duffle",
-          category: "Fashion",
-          cost: 150,
-          rating: 4,
-          image:
-            "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/ff071a1c-1099-48f9-9b03-f858ccc53832.png",
-          _id: "PmInA797xJhMIPti",
-        },
-        {
-          name: "The Minimalist Slim Leather Watch",
-          category: "Electronics",
-          cost: 60,
-          rating: 5,
-          image:
-            "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/5b478a4a-bf81-467c-964c-1881887799b7.png",
-          _id: "TwMM4OAhmK0VQ93S",
-        },
-      ],
-      status: 200,
-    };
-
-    const promise = Promise.resolve(response);
-    axios.get.mockImplementationOnce(() => promise);
-
-    await act(() => promise);
-
-    act(() => {
-      render(ProductDOMTree(history));
-    });
+    render(ProductDOMTree(history));
 
     await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
   });
@@ -101,46 +95,50 @@ describe("Products Page", () => {
     expect(searchInput).toBeInTheDocument();
   });
 
-  it("shows items on the products page load", async () => {
-    expect(axios.get).toHaveBeenCalledTimes(1);
+  it("should make a GET request to load products", () => {
+    const getProductsCall = mock.history.get.find(
+      (req) => req.url === `${config.endpoint}/products`
+    );
+    expect(getProductsCall).toBeTruthy();
+  });
 
+  it("shows items on the products page load", async () => {
     const addToCartBtn = screen.queryAllByRole("button", {
       name: /add to cart/i,
     });
+
     const cardImages = screen
       .queryAllByRole("img")
       .map((image) => image.getAttribute("src"))
       .filter((src) => src !== null)
       .filter((src) => src.match(/https/i));
+
     const stars = screen
       .queryAllByRole("img")
       .map((img) => img.getAttribute("aria-label"))
       .filter((label) => label !== null)
       .filter((label) => label.match(/stars/i));
 
-    expect(stars.length).toBeGreaterThanOrEqual(2);
-    expect(cardImages.length).toBeGreaterThanOrEqual(2);
-    expect(addToCartBtn.length).toBeGreaterThanOrEqual(2);
+    expect(stars.length).toEqual(2);
+    expect(cardImages.length).toEqual(2);
+    expect(addToCartBtn.length).toEqual(2);
   });
 
   it("should make a GET request to search", async () => {
-    const response = {
-      data: [
-        {
-          name: "YONEX Smash Badminton Racquet",
-          category: "Sports",
-          cost: 100,
-          rating: 5,
-          image:
-            "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/64b930f7-3c82-4a29-a433-dbc6f1493578.png",
-          _id: "KCRwjF7lN97HnEaY",
-        },
-      ],
-      status: 200,
-    };
-
-    const promise = Promise.resolve(response);
-    axios.get.mockImplementationOnce(() => promise);
+    const searchResponse = [
+      {
+        name: "YONEX Smash Badminton Racquet",
+        category: "Sports",
+        cost: 100,
+        rating: 5,
+        image:
+          "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/64b930f7-3c82-4a29-a433-dbc6f1493578.png",
+        _id: "KCRwjF7lN97HnEaY",
+      },
+    ];
+    mock
+      .onGet(`${config.endpoint}/products/search?value=smash`)
+      .reply(200, searchResponse);
 
     const search = screen.getAllByPlaceholderText(/search/i)[0];
 
@@ -148,52 +146,59 @@ describe("Products Page", () => {
 
     expect(search).toHaveValue("smash");
 
-    jest.runAllTimers();
-    await act(() => promise);
+    await act(async () => {
+      jest.runAllTimers();
+    });
 
-    expect(axios.get).toHaveBeenCalledWith(
+    const searchCall = mock.history.get.find(
+      (req) => req.url === `${config.endpoint}/products/search?value=smash`
+    );
+    expect(searchCall).toBeTruthy();
+    expect(searchCall.url).toEqual(
       `${config.endpoint}/products/search?value=smash`
     );
   });
 
   it("should show all products if search empty", async () => {
     const search = screen.getAllByPlaceholderText(/search/i)[0];
+    mock.onGet(`${config.endpoint}/products/search?value=`).reply(404, []);
 
     userEvent.type(search, "");
 
-    jest.runAllTimers();
+    await act(async () => {
+      jest.runAllTimers();
+    });
 
     const addToCartBtn = screen.queryAllByRole("button", {
       name: /add to cart/i,
     });
-    expect(addToCartBtn.length).toBeGreaterThanOrEqual(2);
+    expect(addToCartBtn.length).toEqual(2);
   });
 
   it("should show matching products if found", async () => {
-    const response = {
-      data: [
-        {
-          name: "YONEX Smash Badminton Racquet",
-          category: "Sports",
-          cost: 100,
-          rating: 5,
-          image:
-            "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/64b930f7-3c82-4a29-a433-dbc6f1493578.png",
-          _id: "KCRwjF7lN97HnEaY",
-        },
-      ],
-      status: 200,
-    };
+    const searchResponse = [
+      {
+        name: "YONEX Smash Badminton Racquet",
+        category: "Sports",
+        cost: 100,
+        rating: 5,
+        image:
+          "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/64b930f7-3c82-4a29-a433-dbc6f1493578.png",
+        _id: "KCRwjF7lN97HnEaY",
+      },
+    ];
 
-    const promise = Promise.resolve(response);
-    axios.get.mockImplementationOnce(() => promise);
+    mock
+      .onGet(`${config.endpoint}/products/search?value=smash`)
+      .reply(200, searchResponse);
 
     const search = screen.getAllByPlaceholderText(/search/i)[0];
 
     userEvent.type(search, "smash");
 
-    jest.runAllTimers();
-    await act(() => promise);
+    await act(async () => {
+      jest.runAllTimers();
+    });
 
     const text = screen.getByText(/YONEX Smash Badminton Racquet/);
     const addToCartBtn = screen.queryAllByRole("button", {
@@ -205,104 +210,146 @@ describe("Products Page", () => {
   });
 
   it("should 'No Products Found' if search string does get any items", async () => {
-    const response = {
-      data: [],
-      status: 400,
-    };
+    // FIXME - Test passes even if no event handler is set for search input
+    mock
+      .onGet(`${config.endpoint}/products/search?value=smasher`)
+      .reply(404, []);
 
-    const promise = Promise.resolve(response);
-    axios.get.mockImplementationOnce(() => promise);
-
+    // Matches by "placeholder" attribute value set for search input field - should have "search" in the placeholder
     const search = screen.getAllByPlaceholderText(/search/i)[0];
 
     userEvent.type(search, "smasher");
 
-    jest.runAllTimers();
-    await act(() => promise);
+    await act(async () => {
+      jest.runAllTimers();
+    });
 
-    const text = screen.getByText(/No products found/i);
+    const searchCall = mock.history.get.find(
+      (req) => req.url === `${config.endpoint}/products/search?value=smasher`
+    );
+    const text = await screen.findByText(/No products found/i);
     const addToCartBtn = screen.queryAllByRole("button", {
       name: /add to cart/i,
     });
 
+    expect(searchCall).toBeTruthy();
     expect(text).toBeInTheDocument();
     expect(addToCartBtn.length).toEqual(0);
   });
 
   it("updates search items as search string updates", async () => {
-    const response1 = {
-      data: [
-        {
-          name: "Tan Leatherette Weekender Duffle",
-          category: "Fashion",
-          cost: 150,
-          rating: 4,
-          image:
-            "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/ff071a1c-1099-48f9-9b03-f858ccc53832.png",
-          _id: "PmInA797xJhMIPti",
-        },
-        {
-          name: "The Minimalist Slim Leather Watch",
-          category: "Electronics",
-          cost: 60,
-          rating: 5,
-          image:
-            "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/5b478a4a-bf81-467c-964c-1881887799b7.png",
-          _id: "TwMM4OAhmK0VQ93S",
-        },
-      ],
-      status: 200,
-    };
+    const response1 = [
+      {
+        name: "Tan Leatherette Weekender Duffle",
+        category: "Fashion",
+        cost: 150,
+        rating: 4,
+        image:
+          "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/ff071a1c-1099-48f9-9b03-f858ccc53832.png",
+        _id: "PmInA797xJhMIPti",
+      },
+      {
+        name: "The Minimalist Slim Leather Watch",
+        category: "Electronics",
+        cost: 60,
+        rating: 5,
+        image:
+          "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/5b478a4a-bf81-467c-964c-1881887799b7.png",
+        _id: "TwMM4OAhmK0VQ93S",
+      },
+    ];
 
-    const promise1 = Promise.resolve(response1);
-    axios.get.mockImplementationOnce(() => promise1);
+    const response2 = [
+      {
+        name: "Tan Leatherette Weekender Duffle",
+        category: "Fashion",
+        cost: 150,
+        rating: 4,
+        image:
+          "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/ff071a1c-1099-48f9-9b03-f858ccc53832.png",
+        _id: "PmInA797xJhMIPti",
+      },
+    ];
+
+    mock
+      .onGet(`${config.endpoint}/products/search?value=leather`)
+      .reply(200, response1);
+    mock
+      .onGet(`${config.endpoint}/products/search?value=leathere`)
+      .reply(200, response2);
 
     const search = screen.getAllByPlaceholderText(/search/i)[0];
 
     userEvent.type(search, "leather");
 
-    jest.runAllTimers();
-    await act(() => promise1);
-
-    const addToCartBtn = screen.getAllByRole("button", {
-      name: /add to cart/i,
+    await act(async () => {
+      jest.runAllTimers();
     });
-    expect(addToCartBtn.length).toEqual(2);
 
-    const text1 = screen.getByText(/Tan Leatherette Weekender Duffle/i);
-    const text2 = screen.getByText(/The Minimalist Slim Leather Watch/i);
-    expect(text1).toBeInTheDocument();
-    expect(text2).toBeInTheDocument();
+    expect(
+      screen.getAllByRole("button", {
+        name: /add to cart/i,
+      }).length
+    ).toEqual(2);
 
-    const response2 = {
-      data: [
-        {
-          name: "Tan Leatherette Weekender Duffle",
-          category: "Fashion",
-          cost: 150,
-          rating: 4,
-          image:
-            "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/ff071a1c-1099-48f9-9b03-f858ccc53832.png",
-          _id: "PmInA797xJhMIPti",
-        },
-      ],
-      status: 200,
-    };
-
-    const promise2 = Promise.resolve(response2);
-    axios.get.mockImplementationOnce(() => promise2);
+    const item1 = screen.getByText(/Tan Leatherette Weekender Duffle/i);
+    const item2 = screen.getByText(/The Minimalist Slim Leather Watch/i);
+    expect(item1).toBeInTheDocument();
+    expect(item2).toBeInTheDocument();
 
     userEvent.type(search, "e");
     expect(search).toHaveValue("leathere");
 
-    jest.runAllTimers();
-    await act(() => promise2);
-
-    const updatedAddToCartBtns = screen.getAllByRole("button", {
-      name: /add to cart/i,
+    await act(async () => {
+      jest.runAllTimers();
     });
-    expect(text2).not.toBeInTheDocument();
-    expect(updatedAddToCartBtns.length).toEqual(1);
+
+    expect(item2).not.toBeInTheDocument();
+    expect(
+      screen.getAllByRole("button", {
+        name: /add to cart/i,
+      }).length
+    ).toEqual(1);
+  });
+
+  it("debounces the searching API calls", async () => {
+    const searchResponse = [
+      {
+        name: "YONEX Smash Badminton Racquet",
+        category: "Sports",
+        cost: 100,
+        rating: 5,
+        image:
+          "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/64b930f7-3c82-4a29-a433-dbc6f1493578.png",
+        _id: "KCRwjF7lN97HnEaY",
+      },
+    ];
+
+    mock
+      .onGet(`${config.endpoint}/products/search?value=badminton`)
+      .reply(200, searchResponse);
+
+    const search = screen.getAllByPlaceholderText(/search/i)[0];
+
+    userEvent.type(search, "badminton");
+
+    await act(async () => {
+      jest.advanceTimersByTime(100);
+    });
+
+    const searchCall = mock.history.get.find(
+      (req) => req.url === `${config.endpoint}/products/search?value=badminton`
+    );
+    expect(searchCall).toBeFalsy();
+
+    await act(async () => {
+      jest.runAllTimers();
+    });
+
+    const searchCall2 = mock.history.get.find(
+      (req) => req.url === `${config.endpoint}/products/search?value=badminton`
+    );
+    expect(searchCall2).toBeTruthy();
   });
 });
 
@@ -327,40 +374,10 @@ describe("Products Page: Logged in", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
 
-    const response = {
-      data: [
-        {
-          name: "Tan Leatherette Weekender Duffle",
-          category: "Fashion",
-          cost: 150,
-          rating: 4,
-          image:
-            "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/ff071a1c-1099-48f9-9b03-f858ccc53832.png",
-          _id: "PmInA797xJhMIPti",
-        },
-        {
-          name: "The Minimalist Slim Leather Watch",
-          category: "Electronics",
-          cost: 60,
-          rating: 5,
-          image:
-            "https://crio-directus-assets.s3.ap-south-1.amazonaws.com/5b478a4a-bf81-467c-964c-1881887799b7.png",
-          _id: "TwMM4OAhmK0VQ93S",
-        },
-      ],
-      status: 200,
-    };
-
-    const promise = Promise.resolve(response);
-    axios.get.mockImplementationOnce(() => promise);
-
     localStorage.setItem("username", "crio.do");
     localStorage.setItem("token", "testtoken");
-    await act(() => promise);
 
-    act(() => {
-      render(ProductDOMTree(history));
-    });
+    render(ProductDOMTree(history));
 
     await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
   });

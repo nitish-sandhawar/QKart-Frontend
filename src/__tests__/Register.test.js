@@ -7,20 +7,28 @@ import { SnackbarProvider } from "notistack";
 import { Router } from "react-router-dom";
 import { config } from "../App";
 import Register from "../components/Register";
+import MockAdapter from "axios-mock-adapter";
 
-jest.mock("axios");
+const mock = new MockAdapter(axios);
+
+mock
+  .onPost(`${config.endpoint}/auth/register`, {
+    username: "crio.do",
+    password: "learnbydoing",
+  })
+  .reply(200, { success: true });
+
+mock
+  .onPost(`${config.endpoint}/auth/register`, {
+    username: "viveknigam3003",
+    password: "newpass",
+  })
+  .reply(400, { success: false, message: "Username is already taken" });
 
 describe("Register Page", () => {
   const history = createMemoryHistory();
-  beforeEach(() => {
-    Object.defineProperty(window, "localStorage", {
-      value: {
-        getItem: jest.fn(() => null),
-        setItem: jest.fn(() => null),
-      },
-      writable: true,
-    });
 
+  beforeEach(() => {
     render(
       <SnackbarProvider
         maxSnack={1}
@@ -78,6 +86,24 @@ describe("Register Page", () => {
     expect(alert).toHaveTextContent(/required/i);
   });
 
+  it("should throw error if username < 6 characters", async () => {
+    const usernameInput = screen.getByLabelText(/username/i);
+    const [passwordInput, confirmPasswordInput] =
+      screen.getAllByLabelText(/password/i);
+
+    userEvent.type(usernameInput, "abcde");
+    userEvent.type(passwordInput, "learnbydoing");
+    userEvent.type(confirmPasswordInput, "learnbydoing");
+
+    expect(usernameInput).toHaveValue("abcde");
+
+    userEvent.click(screen.getByRole("button", { name: /register/i }));
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toBeInTheDocument();
+    expect(alert).toHaveTextContent(/6/i);
+  });
+
   it("should throw error if password empty", async () => {
     const usernameInput = screen.getByLabelText(/username/i);
 
@@ -92,12 +118,14 @@ describe("Register Page", () => {
     expect(alert).toHaveTextContent(/required/i);
   });
 
-  it("should throw error if password or username < 6 chars long", async () => {
+  it("should throw error if password < 6 chars long", async () => {
     const usernameInput = screen.getByLabelText(/username/i);
-    const [passwordInput] = screen.getAllByLabelText(/password/i);
+    const [passwordInput, confirmPasswordInput] =
+      screen.getAllByLabelText(/password/i);
 
-    userEvent.type(usernameInput, "kwe");
+    userEvent.type(usernameInput, "crio.do");
     userEvent.type(passwordInput, "lea");
+    userEvent.type(confirmPasswordInput, "lea");
 
     userEvent.click(screen.getByRole("button", { name: /register/i }));
 
@@ -122,17 +150,7 @@ describe("Register Page", () => {
     expect(alert).toHaveTextContent(/do not match/i);
   });
 
-  const inputFormAndButtonClick = (req) => {
-    const response = {
-      data: {
-        success: true,
-      },
-      status: 200,
-    };
-
-    const promise = Promise.resolve(response);
-    axios.post.mockImplementationOnce(() => promise);
-
+  const performFormInput = (req) => {
     const usernameInput = screen.getByLabelText(/username/i);
     const [passwordInput, confirmPassword] =
       screen.getAllByLabelText(/password/i);
@@ -141,13 +159,7 @@ describe("Register Page", () => {
     userEvent.type(passwordInput, req.password);
     userEvent.type(confirmPassword, req.password);
 
-    expect(usernameInput).toHaveValue(req.username);
-    expect(passwordInput).toHaveValue(req.password);
-    expect(confirmPassword).toHaveValue(req.password);
-
-    userEvent.click(screen.getByRole("button", { name: /register/i }));
-
-    return promise;
+    return { usernameInput, passwordInput, confirmPassword };
   };
 
   it("should send a POST request with axios", async () => {
@@ -156,13 +168,20 @@ describe("Register Page", () => {
       password: "learnbydoing",
     };
 
-    const promise = inputFormAndButtonClick(request);
+    const { usernameInput, passwordInput, confirmPassword } =
+      performFormInput(request);
+    expect(usernameInput).toHaveValue(request.username);
+    expect(passwordInput).toHaveValue(request.password);
+    expect(confirmPassword).toHaveValue(request.password);
 
-    //Waiting for the promise to be resolved before actually testing it.
-    //Ref: https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning
-    await act(() => promise);
+    await act(async () => {
+      userEvent.click(screen.getByRole("button", { name: /register/i }));
+    });
 
-    expect(axios.post).toHaveBeenCalledTimes(1);
+    const registerCall = mock.history.post.find(
+      (req) => req.url === `${config.endpoint}/auth/register`
+    );
+    expect(registerCall).toBeTruthy();
   });
 
   it("should send a POST request to server with correct arguments", async () => {
@@ -171,16 +190,22 @@ describe("Register Page", () => {
       password: "learnbydoing",
     };
 
-    const promise = inputFormAndButtonClick(request);
+    const { usernameInput, passwordInput, confirmPassword } =
+      performFormInput(request);
+    expect(usernameInput).toHaveValue(request.username);
+    expect(passwordInput).toHaveValue(request.password);
+    expect(confirmPassword).toHaveValue(request.password);
 
-    //Waiting for the promise to be resolved before actually testing it.
-    //Ref: https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning
-    await act(() => promise);
+    await act(async () => {
+      userEvent.click(screen.getByRole("button", { name: /register/i }));
+    });
 
-    expect(axios.post).toHaveBeenCalledWith(
-      `${config.endpoint}/auth/register`,
-      request
+    const registerCall = mock.history.post.find(
+      (req) => req.url === `${config.endpoint}/auth/register`
     );
+
+    expect(registerCall.url).toEqual(`${config.endpoint}/auth/register`);
+    expect(registerCall.data).toEqual(JSON.stringify(request));
   });
 
   it("should show success alert if request succeeds", async () => {
@@ -189,12 +214,30 @@ describe("Register Page", () => {
       password: "learnbydoing",
     };
 
-    const promise = inputFormAndButtonClick(request);
+    performFormInput(request);
 
-    await act(() => promise);
+    await act(async () => {
+      userEvent.click(screen.getByRole("button", { name: /register/i }));
+    });
 
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(/success/i);
+  });
+
+  it("should show error alert if request fails", async () => {
+    const request = {
+      username: "viveknigam3003",
+      password: "newpass",
+    };
+
+    performFormInput(request);
+
+    await act(async () => {
+      userEvent.click(screen.getByRole("button", { name: /register/i }));
+    });
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(/Username is already taken/i);
   });
 
   it("should redirect to login after success", async () => {
@@ -203,18 +246,18 @@ describe("Register Page", () => {
       password: "learnbydoing",
     };
 
-    const promise = inputFormAndButtonClick(request);
-
-    await act(() => promise);
+    performFormInput(request);
 
     expect(history.location.pathname).toBe("/login");
   });
-  it("'back to explore' button should route to products", async () => {
-      const exploreButton = screen.getByRole("button", {
-        name: /back to explore/i,
-      });
-      userEvent.click(exploreButton);
 
-      expect(history.location.pathname).toBe("/");
+
+  it("'back to explore' button should route to products", async () => {
+    const exploreButton = screen.getByRole("button", {
+      name: /back to explore/i,
+    });
+    userEvent.click(exploreButton);
+
+    expect(history.location.pathname).toBe("/");
   });
 });

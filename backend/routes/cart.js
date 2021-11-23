@@ -53,7 +53,7 @@ router.post("/", verifyAuth, async (req, res) => {
           req.user.cart
         );
 
-        return res.status(201).json(req.user.cart);
+        return res.status(200).json(req.user.cart);
       }
     );
   });

@@ -65,6 +65,7 @@ describe("Products Page", () => {
 
     render(ProductDOMTree(history));
 
+    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
   });
 
   it("should have a header has logo with Link", async () => {

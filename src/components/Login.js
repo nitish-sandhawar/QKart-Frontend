@@ -20,7 +20,7 @@ const Login = () => {
    * API endpoint - "POST /auth/login"
    *
    * Example for successful response from backend:
-   * HTTP 200
+   * HTTP 201
    * {
    *      "success": true,
    *      "token": "testtoken",

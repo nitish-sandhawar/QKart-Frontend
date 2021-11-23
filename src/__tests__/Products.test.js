@@ -210,7 +210,6 @@ describe("Products Page", () => {
   });
 
   it("should 'No Products Found' if search string does get any items", async () => {
-    // FIXME - Test passes even if no event handler is set for search input
     mock
       .onGet(`${config.endpoint}/products/search?value=smasher`)
       .reply(404, []);

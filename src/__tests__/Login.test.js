@@ -16,7 +16,7 @@ mock
     username: "crio.do",
     password: "learnbydoing",
   })
-  .reply(200, {
+  .reply(201, {
     success: true,
     token: "testtoken",
     username: "crio.do",

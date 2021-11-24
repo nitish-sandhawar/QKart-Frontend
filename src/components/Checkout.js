@@ -13,11 +13,10 @@ import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { config } from "../App";
-import Cart, { getTotalCartValue } from "./Cart";
+import Cart, { getTotalCartValue, generateCartItemsFrom } from "./Cart";
 import "./Checkout.css";
 import Footer from "./Footer";
 import Header from "./Header";
-import { generateCartItemsFrom } from "./Products";
 
 
 const Checkout = () => {

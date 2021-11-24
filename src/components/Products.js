@@ -132,15 +132,15 @@ const Products = () => {
   // TODO: CRIO_TASK_MODULE_CART - Return if a product already exists in the cart
   /**
    * Return if a product already is present in the cart
-   * 
+   *
    * @param { Array.<{ productId: String, quantity: Number }> } items
    *    Array of objects with productId and quantity of products in cart
-   * @param { String } productId 
+   * @param { String } productId
    *    Id of a product to be checked
-   * 
+   *
    * @returns { Boolean }
    *    Whether a product of given "productId" exists in the "items" array
-   * 
+   *
    */
   const isItemInCart = (items, productId) => {
   };

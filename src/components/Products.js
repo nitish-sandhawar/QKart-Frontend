@@ -20,6 +20,9 @@ const Products = () => {
   /**
    * Make API call to get the products list and store it to display the products
    *
+   * @returns { Array.<{ _id: String, name: String, category: String, image: String, rating: Number, cost: Number}> }
+   *      Array of objects with complete data on all available products
+   * 
    * API endpoint - "GET /products"
    *
    * Example for successful response from backend:
@@ -60,6 +63,9 @@ const Products = () => {
    *
    * @param {string} text
    *    Text user types in the search bar. To filter the displayed products based on this text.
+   *
+   * @returns { Array.<{ _id: String, name: String, category: String, image: String, rating: Number, cost: Number}> }
+   *      Array of objects with complete data on filtered set of products
    *
    * API endpoint - "GET /products/search?value=<search-query>"
    *

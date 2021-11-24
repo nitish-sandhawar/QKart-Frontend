@@ -51,6 +51,9 @@ const Checkout = () => {
             </Typography>
             <Divider />
 
+            <Box my="1rem">
+              <Typography>Wallet</Typography>
+            </Box>
 
             <Button
               startIcon={<CreditCard />}

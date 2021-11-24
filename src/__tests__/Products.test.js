@@ -37,7 +37,19 @@ const productsResponse = [
   },
 ];
 
+const cartResponse = [
+  {
+    productId: "PmInA797xJhMIPti",
+    qty: 2,
+  },
+  {
+    productId: "TwMM4OAhmK0VQ93S",
+    qty: 1,
+  },
+];
+
 mock.onGet(`${config.endpoint}/products`).reply(200, productsResponse);
+mock.onGet(`${config.endpoint}/cart`).reply(200, cartResponse);
 
 jest.useFakeTimers();
 

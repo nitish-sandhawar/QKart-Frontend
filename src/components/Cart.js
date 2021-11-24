@@ -13,12 +13,13 @@ import "./Cart.css";
 /**
  * Returns the complete data on all products in cartData by searching in productsData
  *
- * @param { Array.<{ productId: String, qty: Number }> } cartData 
- *      Array of objects with productId and quantity of products in cart
- * @param { Array.<{ productId: String, name: String, category: String, image: String, rating: Number, cost: Number}> } productsData
- *      Array of objects with complete data on all available products
+ * @param { Array.<{ productId: String, qty: Number }> } cartData
+ *    Array of objects with productId and quantity of products in cart
  * 
- * @returns { Array.<{ productId: String, name: String, category: String, image: String, rating: Number, cost: Number}> } 
+ * @param { Array.<{ _id: String, name: String, category: String, image: String, rating: Number, cost: Number}> } productsData
+ *    Array of objects with complete data on all available products
+ *
+ * @returns { Array.<{ productId: String, qty: Number, name: String, category: String, image: String, rating: Number, cost: Number}> }
  *    Array of objects with complete data on products in cart
  *
  */
@@ -28,10 +29,10 @@ export const generateCartItemsFrom = (cartData, productsData) => {
 /**
  * Get the total value of all products added to the cart
  *
- * @param { Array.<{ productId: String, name: String, category: String, image: String, rating: Number, cost: Number}> } 
+ * @returns { Array.<{ productId: String, qty: Number, name: String, category: String, image: String, rating: Number, cost: Number}> }
  *    Array of objects with complete data on products added to the cart
- * 
- * @returns { Number } 
+ *
+ * @returns { Number }
  *    Value of all items in the cart
  *
  */
@@ -41,6 +42,22 @@ export const getTotalCartValue = (items = []) => {
 export const getTotalItems = (cart = []) => {
 };
 
+/**
+ * Component to display the current quantity for a product and + and - buttons to update product quantity on cart
+ * 
+ * @param {Number} value
+ *    Current quantity of product in cart
+ * 
+ * @param {Function} handleAdd
+ *    Current quantity of product in cart
+ * 
+ * @param {Function} handleDelete
+ *    Current quantity of product in cart
+ * 
+ * @param {Boolean} isReadOnly
+ *    If product quantity on cart is to be displayed as read only without the + - options to change quantity
+ * 
+ */
 const ItemQuantity = ({
   value,
   handleAdd,
@@ -61,6 +78,22 @@ const ItemQuantity = ({
   );
 };
 
+/**
+ * Component to display the Cart view
+ * 
+ * @param { Array.<{ productId: String, name: String, category: String, image: String, rating: Number, cost: Number}> } 
+ *    Array of objects with complete data of all available products
+ * 
+ * @param { Array.<{ productId: String, qty: Number, name: String, category: String, image: String, rating: Number, cost: Number}> }
+ *    Array of objects with complete data on products in cart
+ * 
+ * @param {Function} handleDelete
+ *    Current quantity of product in cart
+ * 
+ * @param {Boolean} isReadOnly
+ *    If product quantity on cart is to be displayed as read only without the + - options to change quantity
+ * 
+ */
 const Cart = ({
   products,
   items = [],

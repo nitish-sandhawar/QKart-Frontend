@@ -47,10 +47,10 @@ export const getTotalCartValue = (items = []) => {
  *    Current quantity of product in cart
  * 
  * @param {Function} handleAdd
- *    Current quantity of product in cart
+ *    Handler function which adds 1 more of a product to cart
  * 
  * @param {Function} handleDelete
- *    Current quantity of product in cart
+ *    Handler function which reduces the quantity of a product in cart by 1
  * 
  * 
  */

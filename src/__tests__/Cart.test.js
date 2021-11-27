@@ -213,7 +213,7 @@ describe("Cart Component", () => {
 
   it("should be able to decrease quantity of product in cart", async () => {
     const btn = screen.getAllByTestId("RemoveOutlinedIcon")[1];
-    console.log(btn)
+
     act(() => {
       userEvent.click(btn);
     });

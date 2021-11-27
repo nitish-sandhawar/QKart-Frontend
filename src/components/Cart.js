@@ -77,6 +77,7 @@ export const getTotalCartValue = (items = []) => {
 export const getTotalItems = (items = []) => {
 };
 
+// TODO: CRIO_TASK_MODULE_CHECKOUT - Add static quantity view for Checkout page cart
 /**
  * Component to display the current quantity for a product and + and - buttons to update product quantity on cart
  * 

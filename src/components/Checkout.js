@@ -168,7 +168,31 @@ const Checkout = () => {
     }
   };
 
-  // Fetch list of addresses for a user
+  /**
+   * Fetch list of addresses for a user
+   *
+   * API Endpoint - "GET /user/addresses"
+   *
+   * Example for successful response from backend:
+   * HTTP 200
+   * [
+   *      {
+   *          "_id": "",
+   *          "address": "Test address\n12th street, Mumbai"
+   *      },
+   *      {
+   *          "_id": "BW0jAAeDJmlZCF8i",
+   *          "address": "New address \nKolam lane, Chennai"
+   *      }
+   * ]
+   *
+   * Example for failed response from backend:
+   * HTTP 401
+   * {
+   *      "success": false,
+   *      "message": "Protected route, Oauth2 Bearer token not found"
+   * }
+   */
   const getAddresses = async (token) => {
     if (!token) return;
 
@@ -207,6 +231,27 @@ const Checkout = () => {
    * @returns { Array.<Address> }
    *    Latest list of addresses
    *
+   * API Endpoint - "POST /user/addresses"
+   *
+   * Example for successful response from backend:
+   * HTTP 200
+   * [
+   *      {
+   *          "_id": "",
+   *          "address": "Test address\n12th street, Mumbai"
+   *      },
+   *      {
+   *          "_id": "BW0jAAeDJmlZCF8i",
+   *          "address": "New address \nKolam lane, Chennai"
+   *      }
+   * ]
+   *
+   * Example for failed response from backend:
+   * HTTP 401
+   * {
+   *      "success": false,
+   *      "message": "Protected route, Oauth2 Bearer token not found"
+   * }
    */
   const addAddress = async (token, newAddress) => {
     try {
@@ -238,6 +283,27 @@ const Checkout = () => {
    * @returns { Array.<Address> }
    *    Latest list of addresses
    *
+   * API Endpoint - "DELETE /user/addresses/<address-id>"
+   *
+   * Example for successful response from backend:
+   * HTTP 200
+   * [
+   *      {
+   *          "_id": "",
+   *          "address": "Test address\n12th street, Mumbai"
+   *      },
+   *      {
+   *          "_id": "BW0jAAeDJmlZCF8i",
+   *          "address": "New address \nKolam lane, Chennai"
+   *      }
+   * ]
+   *
+   * Example for failed response from backend:
+   * HTTP 401
+   * {
+   *      "success": false,
+   *      "message": "Protected route, Oauth2 Bearer token not found"
+   * }
    */
   const deleteAddress = async (token, addressId) => {
     try {
@@ -260,6 +326,17 @@ const Checkout = () => {
   // TODO: CRIO_TASK_MODULE_CHECKOUT - Validate request for checkout
   /**
    * Return if the request validation passed. If it fails, display appropriate warning message.
+   *
+   * Validation checks - show warning message with given text if any of these validation fails
+   *
+   *  1. Not enough balance available to checkout cart items
+   *    "You do not have enough balance in your wallet for this purchase"
+   *
+   *  2. No addresses added for user
+   *    "Please add a new address before proceeding."
+   *
+   *  3. No address selected for checkout
+   *    "Please select one shipping address to proceed."
    *
    * @param { Array.<CartItem> } items
    *    Array of objects with complete data on products added to the cart
@@ -290,6 +367,7 @@ const Checkout = () => {
    * @returns { Boolean }
    *    If checkout operation was successful
    *
+   * API endpoint - "POST /cart/checkout"
    */
   const performCheckout = async (token, items, addresses) => {
   };
@@ -303,8 +381,11 @@ const Checkout = () => {
       const productsData = await getProducts();
 
       const cartData = await fetchCart(token);
-      const cartDetails = await generateCartItemsFrom(cartData, productsData);
-      setItems(cartDetails);
+
+      if (productsData && cartData) {
+        const cartDetails = await generateCartItemsFrom(cartData, productsData);
+        setItems(cartDetails);
+      }
     };
     onLoadHandler();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -374,7 +455,7 @@ const Checkout = () => {
               startIcon={<CreditCard />}
               variant="contained"
             >
-              Make Payment
+              PLACE ORDER
             </Button>
           </Box>
         </Grid>

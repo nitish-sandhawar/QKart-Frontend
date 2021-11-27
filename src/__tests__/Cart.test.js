@@ -149,7 +149,7 @@ describe("Cart Component", () => {
     );
   });
 
-  it("should show items by parsing the response data", () => {
+  it("should show items in cart view by parsing the response data", () => {
     const item1 = screen.getAllByText(/Tan Leatherette Weekender Duffle/);
     const item2 = screen.getAllByText(/The Minimalist Slim Leather Watch/);
 
@@ -157,6 +157,8 @@ describe("Cart Component", () => {
     const item2Price = screen.getAllByText("$60");
 
     const totalPrice = screen.getByText("$360");
+
+    // Item will be present both on Products view and Cart view
     expect(item1.length).toEqual(2);
     expect(item2.length).toEqual(2);
     expect(item1Price.length).toEqual(2);
@@ -179,7 +181,7 @@ describe("Cart Component", () => {
     expect(history.location.pathname).toBe("/checkout");
   });
 
-  it("should be able to update quantity: add", async () => {
+  it("should be able to increase quantity of product in cart", async () => {
     const btn = screen.getAllByTestId("AddOutlinedIcon")[0];
 
     act(() => {
@@ -209,9 +211,9 @@ describe("Cart Component", () => {
     expect(cartTotal.textContent).toEqual("$510");
   });
 
-  it("should be able to update quantity: subtract", async () => {
+  it("should be able to decrease quantity of product in cart", async () => {
     const btn = screen.getAllByTestId("RemoveOutlinedIcon")[1];
-
+    console.log(btn)
     act(() => {
       userEvent.click(btn);
     });
@@ -252,7 +254,7 @@ describe("Cart Component", () => {
     expect(item.length).toEqual(1);
   });
 
-  it("adds a new item when 'add to cart' is clicked", async () => {
+  it("adds a new item when 'ADD TO CART' button is clicked", async () => {
     const btn = screen.getAllByRole("button", { name: /add to cart/i })[2];
 
     expect((await screen.findAllByText(/Yonex/i)).length).toEqual(1);
@@ -264,7 +266,7 @@ describe("Cart Component", () => {
     expect((await screen.findAllByText(/Yonex/i)).length).toEqual(2);
   });
 
-  it("does not add a new item is already in cart", async () => {
+  it("does not add a new item with the 'ADD TO CART' button if already in cart", async () => {
     const btn = screen.getAllByRole("button", { name: /add to cart/i })[0];
 
     await act(async () => {

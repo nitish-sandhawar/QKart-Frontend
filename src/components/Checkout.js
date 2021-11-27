@@ -283,7 +283,7 @@ const Checkout = () => {
    * @returns { Array.<Address> }
    *    Latest list of addresses
    *
-   * API Endpoint - "DELETE /user/addresses/<address-id>"
+   * API Endpoint - "DELETE /user/addresses/:addressId"
    *
    * Example for successful response from backend:
    * HTTP 200

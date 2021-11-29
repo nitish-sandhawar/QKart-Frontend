@@ -96,19 +96,7 @@ describe("Login Page", () => {
     expect(registerNow).toBeInTheDocument();
   });
 
-  it("should show error message if username field is empty", async () => {
-    const usernameInput = screen.getByLabelText(/username/i);
-
-    userEvent.type(usernameInput, "crio.do");
-
-    userEvent.click(screen.getByText(/login to qkart/i));    
-
-    const alert = await screen.findByRole("alert");
-    expect(alert).toBeInTheDocument();
-    expect(alert).toHaveTextContent(/(?=.*password)(?=.*required)/i);
-  });
-
-  it("should show error message if password field is empty", async () => {
+  it("should throw error if username field is empty", async () => {
     const passwordInput = screen.getByLabelText(/password/i);
 
     userEvent.type(passwordInput, "learnbydoing");
@@ -118,6 +106,18 @@ describe("Login Page", () => {
     const alert = await screen.findByRole("alert");
     expect(alert).toBeInTheDocument();
     expect(alert).toHaveTextContent(/(?=.*username)(?=.*required)/i);
+  });
+
+  it("should throw error if password field is empty", async () => {
+    const usernameInput = screen.getByLabelText(/username/i);
+
+    userEvent.type(usernameInput, "crio.do");
+
+    userEvent.click(screen.getByText(/login to qkart/i));    
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toBeInTheDocument();
+    expect(alert).toHaveTextContent(/(?=.*password)(?=.*required)/i);
   });
 
   const performFormInput = (req) => {

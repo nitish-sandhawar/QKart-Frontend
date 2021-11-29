@@ -110,6 +110,7 @@ describe("Login Page", () => {
 
     const alert = await screen.findByRole("alert");
     expect(alert).toBeInTheDocument();
+    expect(alert).toHaveTextContent(/required field/i);
   });
 
   const performFormInput = (req) => {

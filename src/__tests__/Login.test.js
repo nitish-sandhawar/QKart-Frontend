@@ -96,21 +96,28 @@ describe("Login Page", () => {
     expect(registerNow).toBeInTheDocument();
   });
 
-  it("should throw error if form fields are empty", async () => {
-    const inputs = screen.getAllByRole("textbox");
-    const usernameInput = inputs.find(
-      (input) => input.getAttribute("name").toLowerCase() === "username"
-    );
+  it("should show error message if username field is empty", async () => {
+    const usernameInput = screen.getByLabelText(/username/i);
 
     userEvent.type(usernameInput, "crio.do");
 
-    expect(usernameInput).toHaveValue("crio.do");
-
-    userEvent.click(screen.getByText(/login to qkart/i));
+    userEvent.click(screen.getByText(/login to qkart/i));    
 
     const alert = await screen.findByRole("alert");
     expect(alert).toBeInTheDocument();
-    expect(alert).toHaveTextContent(/required field/i);
+    expect(alert).toHaveTextContent(/(?=.*password)(?=.*required)/i);
+  });
+
+  it("should show error message if password field is empty", async () => {
+    const passwordInput = screen.getByLabelText(/password/i);
+
+    userEvent.type(passwordInput, "learnbydoing");
+
+    userEvent.click(screen.getByText(/login to qkart/i));    
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toBeInTheDocument();
+    expect(alert).toHaveTextContent(/(?=.*username)(?=.*required)/i);
   });
 
   const performFormInput = (req) => {

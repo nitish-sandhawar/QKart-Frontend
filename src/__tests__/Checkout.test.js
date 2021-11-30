@@ -79,7 +79,7 @@ mock
 mock
   .onDelete(`${config.endpoint}/user/addresses/Tzd6OaX9Zaz2aEPX9ks1n`)
   .reply(200, []);
-mock.onPost(`${config.endpoint}/cart/checkout`).reply(200);
+mock.onPost(`${config.endpoint}/cart/checkout`).reply(200, { success: true });
 
 describe("Checkout Page", () => {
   const history = createMemoryHistory();

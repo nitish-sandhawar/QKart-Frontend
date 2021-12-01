@@ -75,12 +75,12 @@ describe("Products Page", () => {
     // https://github.com/clarkbw/jest-localstorage-mock/issues/125
     jest.clearAllMocks();
 
-    render(ProductDOMTree(history));
-
-    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
+    await act(async () => {
+      render(ProductDOMTree(history));
+    });
   });
 
-  it("should have a header has logo with Link", async () => {
+  it("should have a header with logo", async () => {
     const images = screen.getAllByRole("img");
     const logo = images.find(
       (img) => img.getAttribute("src") === "logo_dark.svg"
@@ -88,14 +88,14 @@ describe("Products Page", () => {
     expect(logo).toBeInTheDocument();
   });
 
-  it("should have login button route to login page", async () => {
+  it("should have login button on Header route to login page when logged out", async () => {
     const loginBtn = screen.getByRole("button", { name: /login/i });
     userEvent.click(loginBtn);
 
     expect(history.location.pathname).toBe("/login");
   });
 
-  it("should have register button route to register page", async () => {
+  it("should have register button on Header route to register page when logged out", async () => {
     const registerBtn = screen.getByRole("button", { name: /register/i });
     userEvent.click(registerBtn);
 
@@ -105,6 +105,85 @@ describe("Products Page", () => {
   it("should have a search bar", () => {
     const searchInput = screen.getAllByPlaceholderText(/search/i)[0];
     expect(searchInput).toBeInTheDocument();
+  });
+});
+
+describe("Products Page: Logged in", () => {
+  const history = createMemoryHistory();
+
+  const ProductDOMTree = (history) => (
+    <SnackbarProvider
+      maxSnack={1}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "center",
+      }}
+      preventDuplicate
+    >
+      <Router history={history}>
+        <Products />
+      </Router>
+    </SnackbarProvider>
+  );
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+
+    localStorage.setItem("username", "crio.do");
+    localStorage.setItem("token", "testtoken");
+
+    await act(async () => {
+      render(ProductDOMTree(history));
+    });
+  });
+
+  it("should have username & avatar in header if logged in", () => {
+    const avatar = screen.getByAltText(/crio.do/i);
+    const username = screen.getByText(/crio.do/i);
+    expect(avatar).toBeInTheDocument();
+    expect(username).toBeInTheDocument();
+  });
+
+  it("should have logout button in header when logged in", () => {
+    const logoutButton = screen.getByRole("button", { name: /logout/i });
+    expect(logoutButton).toBeInTheDocument();
+  });
+
+  it("logout button should clear localstorage items", async () => {
+    const logoutButton = screen.getByRole("button", { name: /logout/i });
+    userEvent.click(logoutButton);
+
+    expect(localStorage.getItem("username")).toBeNull();
+    expect(localStorage.getItem("token")).toBeNull();
+    expect(localStorage.getItem("balance")).toBeNull();
+  });
+});
+
+describe("Products Page", () => {
+  const history = createMemoryHistory();
+
+  const ProductDOMTree = (history) => (
+    <SnackbarProvider
+      maxSnack={1}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "center",
+      }}
+      preventDuplicate
+    >
+      <Router history={history}>
+        <Products />
+      </Router>
+    </SnackbarProvider>
+  );
+
+  beforeEach(async () => {
+    // https://github.com/clarkbw/jest-localstorage-mock/issues/125
+    jest.clearAllMocks();
+
+    render(ProductDOMTree(history));
+
+    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
   });
 
   it("should make a GET request to load products", () => {
@@ -361,56 +440,5 @@ describe("Products Page", () => {
       (req) => req.url === `${config.endpoint}/products/search?value=badminton`
     );
     expect(searchCall2).toBeTruthy();
-  });
-});
-
-describe("Products Page: Logged in", () => {
-  const history = createMemoryHistory();
-
-  const ProductDOMTree = (history) => (
-    <SnackbarProvider
-      maxSnack={1}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "center",
-      }}
-      preventDuplicate
-    >
-      <Router history={history}>
-        <Products />
-      </Router>
-    </SnackbarProvider>
-  );
-
-  beforeEach(async () => {
-    jest.clearAllMocks();
-
-    localStorage.setItem("username", "crio.do");
-    localStorage.setItem("token", "testtoken");
-
-    render(ProductDOMTree(history));
-
-    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
-  });
-
-  it("should have username & avatar in header", () => {
-    const avatar = screen.getByAltText(/crio.do/i);
-    const username = screen.getByText(/crio.do/i);
-    expect(avatar).toBeInTheDocument();
-    expect(username).toBeInTheDocument();
-  });
-
-  it("should have logout button in header", () => {
-    const logoutButton = screen.getByRole("button", { name: /logout/i });
-    expect(logoutButton).toBeInTheDocument();
-  });
-
-  it("logout button should clear localstorage items", async () => {
-    const logoutButton = screen.getByRole("button", { name: /logout/i });
-    userEvent.click(logoutButton);
-
-    expect(localStorage.getItem("username")).toBeNull();
-    expect(localStorage.getItem("token")).toBeNull();
-    expect(localStorage.getItem("balance")).toBeNull();
   });
 });

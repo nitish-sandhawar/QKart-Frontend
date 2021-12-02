@@ -192,13 +192,20 @@ const Products = () => {
    *    If this function was triggered from the product card's "Add to Cart" button
    *
    * Example for successful response from backend:
-   * HTTP 200
-   * {
-   *      "success": true
-   * }
+   * HTTP 200 - Updated list of cart items
+   * [
+   *      {
+   *          "productId": "KCRwjF7lN97HnEaY",
+   *          "qty": 3
+   *      },
+   *      {
+   *          "productId": "BW0jAAeDJmlZCF8i",
+   *          "qty": 1
+   *      }
+   * ]
    *
    * Example for failed response from backend:
-   * HTTP 404
+   * HTTP 404 - On invalid productId
    * {
    *      "success": false,
    *      "message": "Product doesn't exist"

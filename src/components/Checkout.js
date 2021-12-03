@@ -203,10 +203,7 @@ const Checkout = () => {
         },
       });
 
-      setAddresses((currAddresses) => ({
-        ...currAddresses,
-        all: response.data,
-      }));
+      setAddresses({ ...addresses, all: response.data });
       return response.data;
     } catch {
       enqueueSnackbar(
@@ -368,20 +365,20 @@ const Checkout = () => {
    *    If checkout operation was successful
    *
    * API endpoint - "POST /cart/checkout"
-   * 
+   *
    * Example for successful response from backend:
    * HTTP 200
    * {
    *  "success": true
    * }
-   * 
+   *
    * Example for failed response from backend:
    * HTTP 400
    * {
    *  "success": false,
    *  "message": "Wallet balance not sufficient to place order"
    * }
-   * 
+   *
    */
   const performCheckout = async (token, items, addresses) => {
   };

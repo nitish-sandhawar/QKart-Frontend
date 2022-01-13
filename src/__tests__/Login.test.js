@@ -37,6 +37,8 @@ describe("Login Page", () => {
   const history = createMemoryHistory();
 
   beforeEach(() => {
+    mock.resetHistory();
+
     render(
       <SnackbarProvider
         maxSnack={1}
@@ -60,7 +62,7 @@ describe("Login Page", () => {
     expect(heading).toBeInTheDocument();
   });
 
-  it("should have a header has logo with Link", () => {
+  it("should have a header with logo", () => {
     // Matches by <img> tag role -> img
     const images = screen.getAllByRole("img");
 
@@ -80,7 +82,7 @@ describe("Login Page", () => {
     expect(exploreButton).toBeInTheDocument();
   });
 
-  it("'back to explore' button should route to products", async () => {
+  it("'back to explore' button on Header should route to products", async () => {
     // Matches by <button> with text "Back To Explore" - case insensitive
     const exploreButton = screen.getByRole("button", {
       name: /back to explore/i,
@@ -192,7 +194,7 @@ describe("Login Page", () => {
     expect(alert).toHaveTextContent(/logged in/i);
   });
 
-  it("should show error alert if request fails", async () => {
+  it("should show error alert with message sent from backend if request fails", async () => {
     const request = {
       username: "crio.do",
       password: "wrongpassword",

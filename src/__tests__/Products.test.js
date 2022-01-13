@@ -69,9 +69,12 @@ describe("Products Page - Header", () => {
         <Products />
       </Router>
     </SnackbarProvider>
+    
   );
 
   beforeEach(async () => {
+    mock.resetHistory();
+
     // https://github.com/clarkbw/jest-localstorage-mock/issues/125
     jest.clearAllMocks();
 
@@ -154,3 +157,4 @@ describe("Products Page - Header: Logged in", () => {
     expect(localStorage.getItem("balance")).toBeNull();
   });
 });
+

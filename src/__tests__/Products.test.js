@@ -53,7 +53,7 @@ mock.onGet(`${config.endpoint}/cart`).reply(200, cartResponse);
 
 jest.useFakeTimers();
 
-describe("Products Page", () => {
+describe("Products Page - Header", () => {
   const history = createMemoryHistory();
 
   const ProductDOMTree = (history) => (
@@ -69,9 +69,12 @@ describe("Products Page", () => {
         <Products />
       </Router>
     </SnackbarProvider>
+    
   );
 
   beforeEach(async () => {
+    mock.resetHistory();
+
     // https://github.com/clarkbw/jest-localstorage-mock/issues/125
     jest.clearAllMocks();
 
@@ -108,7 +111,7 @@ describe("Products Page", () => {
   });
 });
 
-describe("Products Page: Logged in", () => {
+describe("Products Page - Header: Logged in", () => {
   const history = createMemoryHistory();
 
   const ProductDOMTree = (history) => (

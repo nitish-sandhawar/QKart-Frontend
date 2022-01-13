@@ -29,6 +29,8 @@ describe("Register Page", () => {
   const history = createMemoryHistory();
 
   beforeEach(() => {
+    mock.resetHistory();
+
     render(
       <SnackbarProvider
         maxSnack={1}
@@ -51,7 +53,7 @@ describe("Register Page", () => {
     expect(heading).toBeInTheDocument();
   });
 
-  it("should have a header has logo with Link", () => {
+  it("should have header with logo", () => {
     const images = screen.getAllByRole("img");
     const logo = images.find(
       (img) => img.getAttribute("src") === "logo_dark.svg"
@@ -72,7 +74,7 @@ describe("Register Page", () => {
     expect(loginHere).toBeInTheDocument();
   });
 
-  it("should throw error if username empty", async () => {
+  it("should show error message if username empty", async () => {
     const [passwordInput] = screen.getAllByLabelText(/password/i);
 
     userEvent.type(passwordInput, "learnbydoing");
@@ -86,7 +88,7 @@ describe("Register Page", () => {
     expect(alert).toHaveTextContent(/required/i);
   });
 
-  it("should throw error if username < 6 characters", async () => {
+  it("should show error message if username < 6 characters", async () => {
     const usernameInput = screen.getByLabelText(/username/i);
     const [passwordInput, confirmPasswordInput] =
       screen.getAllByLabelText(/password/i);
@@ -104,7 +106,7 @@ describe("Register Page", () => {
     expect(alert).toHaveTextContent(/6/i);
   });
 
-  it("should throw error if password empty", async () => {
+  it("should show error message if password empty", async () => {
     const usernameInput = screen.getByLabelText(/username/i);
 
     userEvent.type(usernameInput, "crio.do");
@@ -118,7 +120,7 @@ describe("Register Page", () => {
     expect(alert).toHaveTextContent(/required/i);
   });
 
-  it("should throw error if password < 6 chars long", async () => {
+  it("should show error message if password < 6 chars long", async () => {
     const usernameInput = screen.getByLabelText(/username/i);
     const [passwordInput, confirmPasswordInput] =
       screen.getAllByLabelText(/password/i);
@@ -134,7 +136,7 @@ describe("Register Page", () => {
     expect(alert).toHaveTextContent(/6/i);
   });
 
-  it("should throw error if password and confirm password are not same", async () => {
+  it("should show error message if password and confirm password are not same", async () => {
     const usernameInput = screen.getByLabelText(/username/i);
     const [passwordInput, confirmPassword] =
       screen.getAllByLabelText(/password/i);
@@ -229,7 +231,7 @@ describe("Register Page", () => {
     expect(alert).toHaveTextContent(/success/i);
   });
 
-  it("should show error alert if request fails", async () => {
+  it("should show error alert with message sent from backend if request fails", async () => {
     const request = {
       username: "viveknigam3003",
       password: "newpass",
@@ -256,7 +258,7 @@ describe("Register Page", () => {
     expect(history.location.pathname).toBe("/login");
   });
 
-  it("'back to explore' button should route to products", async () => {
+  it("'back to explore' button on Header should route to products", async () => {
     const exploreButton = screen.getByRole("button", {
       name: /back to explore/i,
     });

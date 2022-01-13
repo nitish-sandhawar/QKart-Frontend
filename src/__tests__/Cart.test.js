@@ -101,6 +101,7 @@ jest.useFakeTimers();
 
 describe("Cart Component", () => {
   const history = createMemoryHistory();
+  history.push("/products");
 
   const ProductDOMTree = (history) => (
     <SnackbarProvider
@@ -118,6 +119,8 @@ describe("Cart Component", () => {
   );
 
   beforeEach(async () => {
+    mock.resetHistory();
+
     // https://github.com/clarkbw/jest-localstorage-mock/issues/125
     jest.clearAllMocks();
 
@@ -161,24 +164,10 @@ describe("Cart Component", () => {
     // Item will be present both on Products view and Cart view
     expect(item1.length).toEqual(2);
     expect(item2.length).toEqual(2);
+    // Element matched by "$150", will fail if cost on cart doesn't have "$" symbol
     expect(item1Price.length).toEqual(2);
     expect(item2Price.length).toEqual(2);
     expect(totalPrice).toBeInTheDocument();
-  });
-
-  it("should have a Checkout button", () => {
-    const btn = screen.getByRole("button", { name: /checkout/i });
-    expect(btn).toBeInTheDocument();
-  });
-
-  it("has Checkout button to redirect to /checkout page", async () => {
-    const btn = screen.getByRole("button", { name: /checkout/i });
-
-    act(() => {
-      userEvent.click(btn);
-    });
-
-    expect(history.location.pathname).toBe("/checkout");
   });
 
   it("should be able to increase quantity of product in cart", async () => {
@@ -275,5 +264,20 @@ describe("Cart Component", () => {
 
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(/item already in cart/i);
+  });
+
+  it("should have a Checkout button", () => {
+    const btn = screen.getByRole("button", { name: /checkout/i });
+    expect(btn).toBeInTheDocument();
+  });
+
+  it("has Checkout button to redirect to /checkout page", async () => {
+    const btn = screen.getByRole("button", { name: /checkout/i });
+
+    act(() => {
+      userEvent.click(btn);
+    });
+
+    expect(history.location.pathname).toBe("/checkout");
   });
 });

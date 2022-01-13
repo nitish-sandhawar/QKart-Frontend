@@ -82,7 +82,9 @@ mock
 mock.onPost(`${config.endpoint}/cart/checkout`).reply(200, { success: true });
 
 describe("Checkout Page", () => {
-  const history = createMemoryHistory();
+  // Allow access to useHistory()
+  let history = createMemoryHistory();
+  history.push("/checkout");
 
   const ProductDOMTree = (history) => (
     <SnackbarProvider
@@ -100,6 +102,8 @@ describe("Checkout Page", () => {
   );
 
   beforeEach(async () => {
+    mock.resetHistory();
+
     // https://github.com/clarkbw/jest-localstorage-mock/issues/125
     jest.clearAllMocks();
 
@@ -111,6 +115,10 @@ describe("Checkout Page", () => {
       render(ProductDOMTree(history));
     });
   });
+
+  // afterEach(() => {
+  //   history.push("/checkout");
+  // })
 
   it("should retrieve products", () => {
     const getCalls = mock.history.get.map((call) => call.url);
@@ -186,49 +194,6 @@ describe("Checkout Page", () => {
   it("should have a place order button", () => {
     const payBtn = screen.getByRole("button", { name: /place order/i });
     expect(payBtn).toBeInTheDocument();
-  });
-
-  it("should make an API call on clicking make payement button", () => {
-    const address = screen.getByText(/Some address/i);
-    const payBtn = screen.getByRole("button", { name: /place order/i });
-
-    act(() => {
-      userEvent.click(address);
-    });
-
-    userEvent.click(payBtn);
-
-    const postCalls = mock.history.post.map((call) => ({
-      url: call.url,
-      headers: call.headers,
-      data: call.data,
-    }));
-
-    const checkoutCall = postCalls.find(
-      (call) => call.url === `${config.endpoint}/cart/checkout`
-    );
-    expect(checkoutCall.url).toBe(`${config.endpoint}/cart/checkout`);
-    expect(checkoutCall.headers.Authorization).toBe(
-      `Bearer ${localStorage.getItem("token")}`
-    );
-    expect(checkoutCall.data).toBe(
-      JSON.stringify({
-        addressId: "Tzd6OaX9Zaz2aEPX9ks1n",
-      })
-    );
-  });
-
-  it("should route to /thanks after checkout successful", () => {
-    const address = screen.getByText(/Some address/i);
-    const payBtn = screen.getByRole("button", { name: /place order/i });
-
-    act(() => {
-      userEvent.click(address);
-    });
-
-    userEvent.click(payBtn);
-
-    expect(history.location.pathname).toBe("/thanks");
   });
 
   it("should show error message if no address selected for checkout", () => {
@@ -323,5 +288,48 @@ describe("Checkout Page", () => {
     );
 
     expect(screen.queryByText(/Some address/i)).toBeNull();
+  });
+
+  it("should make an API call on clicking make payement button", () => {
+    const address = screen.getByText(/Some address/i);
+    const payBtn = screen.getByRole("button", { name: /place order/i });
+
+    act(() => {
+      userEvent.click(address);
+    });
+
+    userEvent.click(payBtn);
+
+    const postCalls = mock.history.post.map((call) => ({
+      url: call.url,
+      headers: call.headers,
+      data: call.data,
+    }));
+
+    const checkoutCall = postCalls.find(
+      (call) => call.url === `${config.endpoint}/cart/checkout`
+    );
+    expect(checkoutCall.url).toBe(`${config.endpoint}/cart/checkout`);
+    expect(checkoutCall.headers.Authorization).toBe(
+      `Bearer ${localStorage.getItem("token")}`
+    );
+    expect(checkoutCall.data).toBe(
+      JSON.stringify({
+        addressId: "Tzd6OaX9Zaz2aEPX9ks1n",
+      })
+    );
+  });
+
+  it("should route to /thanks after checkout successful", () => {
+    const address = screen.getByText(/Some address/i);
+    const payBtn = screen.getByRole("button", { name: /place order/i });
+
+    act(() => {
+      userEvent.click(address);
+    });
+
+    userEvent.click(payBtn);
+
+    expect(history.location.pathname).toBe("/thanks");
   });
 });

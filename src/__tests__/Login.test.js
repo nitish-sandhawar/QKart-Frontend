@@ -37,6 +37,8 @@ describe("Login Page", () => {
   const history = createMemoryHistory();
 
   beforeEach(() => {
+    mock.resetHistory();
+
     render(
       <SnackbarProvider
         maxSnack={1}
@@ -60,7 +62,7 @@ describe("Login Page", () => {
     expect(heading).toBeInTheDocument();
   });
 
-  it("should have a header has logo with Link", () => {
+  it("should have a header with logo", () => {
     // Matches by <img> tag role -> img
     const images = screen.getAllByRole("img");
 
@@ -80,7 +82,7 @@ describe("Login Page", () => {
     expect(exploreButton).toBeInTheDocument();
   });
 
-  it("'back to explore' button should route to products", async () => {
+  it("'back to explore' button on Header should route to products", async () => {
     // Matches by <button> with text "Back To Explore" - case insensitive
     const exploreButton = screen.getByRole("button", {
       name: /back to explore/i,
@@ -96,20 +98,28 @@ describe("Login Page", () => {
     expect(registerNow).toBeInTheDocument();
   });
 
-  it("should throw error if form fields are empty", async () => {
-    const inputs = screen.getAllByRole("textbox");
-    const usernameInput = inputs.find(
-      (input) => input.getAttribute("name").toLowerCase() === "username"
-    );
+  it("should throw error if username field is empty", async () => {
+    const passwordInput = screen.getByLabelText(/password/i);
 
-    userEvent.type(usernameInput, "crio.do");
+    userEvent.type(passwordInput, "learnbydoing");
 
-    expect(usernameInput).toHaveValue("crio.do");
-
-    userEvent.click(screen.getByText(/login to qkart/i));
+    userEvent.click(screen.getByText(/login to qkart/i));    
 
     const alert = await screen.findByRole("alert");
     expect(alert).toBeInTheDocument();
+    expect(alert).toHaveTextContent(/(?=.*username)(?=.*required)/i);
+  });
+
+  it("should throw error if password field is empty", async () => {
+    const usernameInput = screen.getByLabelText(/username/i);
+
+    userEvent.type(usernameInput, "crio.do");
+
+    userEvent.click(screen.getByText(/login to qkart/i));    
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toBeInTheDocument();
+    expect(alert).toHaveTextContent(/(?=.*password)(?=.*required)/i);
   });
 
   const performFormInput = (req) => {
@@ -184,7 +194,7 @@ describe("Login Page", () => {
     expect(alert).toHaveTextContent(/logged in/i);
   });
 
-  it("should show error alert if request fails", async () => {
+  it("should show error alert with message sent from backend if request fails", async () => {
     const request = {
       username: "crio.do",
       password: "wrongpassword",

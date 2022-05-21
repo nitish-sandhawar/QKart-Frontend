@@ -33,7 +33,7 @@
   "scripts": {
     "start": "PORT=8081 react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --json --outputFile=testReport.json",
+    "test": "react-scripts test --json --outputFile=testReport.json --watchAll=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

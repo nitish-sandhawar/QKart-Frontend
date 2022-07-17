@@ -9,7 +9,8 @@ import theme from "./theme";
 
 ReactDOM.render(
   <React.StrictMode>
-        <SnackbarProvider
+    <BrowserRouter>
+      <SnackbarProvider
           maxSnack={1}
           anchorOrigin={{
             vertical: "bottom",
@@ -19,6 +20,7 @@ ReactDOM.render(
         >
           <App />
         </SnackbarProvider>
+    </BrowserRouter>     
   </React.StrictMode>,
    document.getElementById('root')
 );

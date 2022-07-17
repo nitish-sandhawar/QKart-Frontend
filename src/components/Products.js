@@ -1,5 +1,6 @@
 import { Search, SentimentDissatisfied } from "@mui/icons-material";
 import {
+  Button,
   CircularProgress,
   Grid,
   InputAdornment,
@@ -9,6 +10,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { config } from "../App";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -26,9 +28,7 @@ const Products = () => {
 
   return (
     <div>
-      <Header>
-
-      </Header>
+      <Header />
 
        <Grid container>
          <Grid item className="product-grid">

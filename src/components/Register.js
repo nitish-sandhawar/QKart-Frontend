@@ -12,10 +12,12 @@ import { useHistory, Link } from "react-router-dom";
 
 const Register = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const [username, setUserName] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [apiExecuted, setApiExecuted] = useState(false)
+
+  const history = useHistory();
 
   /**
    * Definition for register handler
@@ -50,6 +52,7 @@ const Register = () => {
       try {
         const response = await axios.post(`${config.endpoint}/auth/register`, formDetail)
         enqueueSnackbar("Registered successfully", { variant: 'success', autoHideDuration: 3000 })
+        history.push("/login",{from:"Register"})
       } catch (err) {
         if (err.response.status === 400) {
           enqueueSnackbar(err.response.data.message, { variant: 'error',autoHideDuration: 3000 })
@@ -118,7 +121,7 @@ const Register = () => {
             name="username"
             placeholder="Enter Username"
             fullWidth
-            onChange={(e)=>setUserName(e.target.value)}
+            onChange={(e)=>setUsername(e.target.value)}
           />
           <TextField
             id="password"
@@ -151,9 +154,9 @@ const Register = () => {
            
           <p className="secondary-action">
             Already have an account?{" "}
-             <a className="link" href="#">
+             <Link className="link" to="/login">
               Login here
-             </a>
+             </Link>
           </p>
         </Stack>
       </Box>

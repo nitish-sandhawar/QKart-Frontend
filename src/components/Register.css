@@ -45,18 +45,20 @@
   color: #45c09f;
 }
 
-.button {
+/* .button {
     background-color: #00a278 !important;
 }
 
 .button:hover {
     background-color: #00845c !important;
-}
+} */
 
 @media screen and (min-width: 768px) {
+  .content {
+    justify-content: flex-end;
+  }
+  
   .form {
-    position: absolute;
-    right:1vw;
     min-width: 24rem;
   }
 }

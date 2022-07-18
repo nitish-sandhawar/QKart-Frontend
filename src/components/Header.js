@@ -69,25 +69,6 @@ const Header = ({ children, hasHiddenAuthButtons }) => {
         }
       </Box>
     );
-  
-    //   return (
-    //   <Box className="header">
-    //     <Box className="header-title">
-    //         <img src="logo_light.svg" alt="QKart-icon"></img>
-    //     </Box>
-    //     {hasHiddenAuthButtons &&
-    //       <Link to="/" className="link">
-    //         <Button
-    //         className="explore-button"
-    //         startIcon={<ArrowBackIcon />}
-    //         variant="text"
-    //         >
-    //           Back to explore
-    //           </Button>
-    //         </Link>
-    //     }
-    //   </Box>
-    // );
 };
 
 export default Header;

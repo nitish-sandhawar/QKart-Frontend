@@ -1,10 +1,11 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Avatar, Button, Stack } from "@mui/material";
+import { Avatar, Button, InputAdornment, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import React from "react";
 import "./Header.css";
 import {Link} from "react-router-dom";
 import { useState } from "react";
+import { Search } from "@mui/icons-material";
 
 const Header = ({ children, hasHiddenAuthButtons }) => {
   const getUserInfo = () => {
@@ -33,6 +34,24 @@ const Header = ({ children, hasHiddenAuthButtons }) => {
         <Box className="header-title">
             <img src="logo_light.svg" alt="QKart-icon"></img>
         </Box>
+
+        {children && 
+            <TextField
+              className="search-desktop"
+              size="small"
+              value={children.searchInput}
+              onChange={(e) => children.debounceSearch(e, 1000) }
+              InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Search color="primary" />
+                </InputAdornment>
+              ),
+            }}
+            placeholder="Search for items/categories"
+            name="search"
+          />
+        }
         {(hasHiddenAuthButtons) ?
           <Link to="/" className="link">
             <Button

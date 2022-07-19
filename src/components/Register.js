@@ -127,6 +127,7 @@ const Register = () => {
             id="password"
             variant="outlined"
             label="Password"
+            title="Password"
             name="password"
             type="password"
             helperText="Password must be atleast 6 characters length"

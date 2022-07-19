@@ -136,6 +136,7 @@ const Login = () => {
             id="password"
             variant="outlined"
             label="password"
+            title="Password"
             name="password"
             type="password"
             helperText="Password must be atleast 6 characters length"

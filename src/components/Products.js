@@ -1,3 +1,4 @@
+import { SettingsApplications } from "@mui/icons-material";
 import { Search, SentimentDissatisfied } from "@mui/icons-material";
 import {
   Button,
@@ -5,6 +6,7 @@ import {
   Grid,
   InputAdornment,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
@@ -14,6 +16,7 @@ import { Link } from "react-router-dom";
 import { config } from "../App";
 import Footer from "./Footer";
 import Header from "./Header";
+import ProductCard from "./ProductCard";
 import "./Products.css";
 
 // Definition of Data Structures used
@@ -30,6 +33,12 @@ import "./Products.css";
 
 
 const Products = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const [productList, setProductList] = useState([]);
+  const [isLoading, setisLoading] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [debounceTimeout, setDebounceTimeout] = useState(0);
+  const [apiResponseStatus, setApiResponseStatus] = useState();
 
   // TODO: CRIO_TASK_MODULE_PRODUCTS - Fetch products data and store it
   /**
@@ -67,9 +76,26 @@ const Products = () => {
    *      "success": false,
    *      "message": "Something went wrong. Check the backend console for more details"
    * }
-   */
+  */
+ 
   const performAPICall = async () => {
+    setisLoading(true)                       //for showing circular progress bar
+    try {
+      const response = await axios.get(`${config.endpoint}/products`)
+      setProductList(response.data)
+      setApiResponseStatus(response.status)
+    } catch (err) {
+      setApiResponseStatus(err.response.status)
+      if (err.response.status === 500) {
+        enqueueSnackbar(err.response.data.message, { variant: 'error',autoHideDuration: 3000 })
+      }
+    }
+    setisLoading(false)                      //deactivating circular progress bar
   };
+
+  useEffect(() => {
+    performAPICall()
+  },[])
 
   // TODO: CRIO_TASK_MODULE_PRODUCTS - Implement search logic
   /**
@@ -86,6 +112,15 @@ const Products = () => {
    *
    */
   const performSearch = async (text) => {
+    setisLoading(true)                       //for showing circular progress bar
+    try {
+      const response = await axios.get(`${config.endpoint}/products/search?value=${text}`);
+      setProductList(response.data)
+      setApiResponseStatus(response.status)
+    } catch (err) {
+      setApiResponseStatus(err.response.status)
+    }
+    setisLoading(false)                    //deactivating circular progress bar
   };
 
   // TODO: CRIO_TASK_MODULE_PRODUCTS - Optimise API calls with debounce search implementation
@@ -100,26 +135,30 @@ const Products = () => {
    *    Timer id set for the previous debounce call
    *
    */
-  const debounceSearch = (event, debounceTimeout) => {
+  const debounceSearch = (event, debounceTimeoutLocal) => {
+    setSearchInput(event.target.value);
+    if (debounceTimeout !== 0) {
+      clearTimeout(debounceTimeout);
+    }
+    // call
+    const newTimeout = setTimeout(() => performSearch(event.target.value), debounceTimeoutLocal);
+    setDebounceTimeout(newTimeout);
   };
-
-
-
-
-
 
 
   return (
     <div>
-      <Header>
+      <Header children={{ debounceSearch: debounceSearch, searchInput:searchInput }}>
         {/* TODO: CRIO_TASK_MODULE_PRODUCTS - Display search bar in the header for Products page */}
-
+        
       </Header>
 
       {/* Search view for mobiles */}
       <TextField
         className="search-mobile"
         size="small"
+        value={searchInput}
+        onChange={(e)=>debounceSearch(e,1000)}
         fullWidth
         InputProps={{
           endAdornment: (
@@ -131,16 +170,41 @@ const Products = () => {
         placeholder="Search for items/categories"
         name="search"
       />
-       <Grid container>
+       <Grid container spacing={2}>
          <Grid item className="product-grid">
            <Box className="hero">
              <p className="hero-heading">
                India’s <span className="hero-highlight">FASTEST DELIVERY</span>{" "}
                to your door step
              </p>
-           </Box>
-         </Grid>
-       </Grid>
+          </Box> 
+        </Grid>
+        {
+          (isLoading === true) ? <Grid item className="product-grid">
+            <Box className = "loading">
+            <CircularProgress color="success" />
+            <Typography>Loading Products</Typography>
+          </Box>
+          </Grid>
+          :
+            (apiResponseStatus !== 200) ? <Grid item className="product-grid">
+              <Box className = "loading">
+                <SentimentDissatisfied />
+                <Typography>No Products Found</Typography>
+              </Box>
+            </Grid>
+              :
+            productList.map((products) => {
+              const { id } = products;
+              return (
+                <Grid item xs={6} md={3} key={id}>
+                  <ProductCard product = {products} />
+                </Grid>
+              )
+            })
+       }
+      </Grid>
+      
       <Footer />
     </div>
   );

@@ -35,23 +35,7 @@ const Header = ({ children, hasHiddenAuthButtons }) => {
             <img src="logo_light.svg" alt="QKart-icon"></img>
         </Box>
 
-        {children && 
-            <TextField
-              className="search-desktop"
-              size="small"
-              value={children.searchInput}
-              onChange={(e) => children.debounceSearch(e, 1000) }
-              InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Search color="primary" />
-                </InputAdornment>
-              ),
-            }}
-            placeholder="Search for items/categories"
-            name="search"
-          />
-        }
+        {children}
         {(hasHiddenAuthButtons) ?
           <Link to="/" className="link">
             <Button

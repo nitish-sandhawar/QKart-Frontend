@@ -194,12 +194,14 @@ const Products = () => {
           </Box> 
         </Grid>
         {
-          (isLoading === true) ? <Grid item className="product-grid">
+          (isLoading === true) ?
+            <Grid item className="product-grid">
             <Box className = "loading">
             <CircularProgress color="success" />
             <Typography>Loading Products</Typography>
           </Box>
           </Grid>
+            
           :
             (apiResponseStatus !== 200) ? <Grid item className="product-grid">
               <Box className = "loading">
@@ -211,7 +213,7 @@ const Products = () => {
             productList.map((products) => {
               const { id } = products;
               return (
-                <Grid item xs={6} md={3} key={id}>
+                <Grid item xs={6} md={3} key={id} className="product-grid">
                   <ProductCard product = {products} />
                 </Grid>
               )

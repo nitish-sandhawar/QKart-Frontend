@@ -52,6 +52,9 @@
   display: none !important;
 }
 
+.cart-place {
+  background-color: #E9F5E1;
+}
 @media screen and (min-width: 768px) {
   .hero {
     justify-content: flex-end;

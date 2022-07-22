@@ -18,6 +18,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import ProductCard from "./ProductCard";
 import "./Products.css";
+import Cart from "./Cart"
 
 // Definition of Data Structures used
 /**
@@ -44,13 +45,39 @@ import "./Products.css";
 
 
 const Products = () => {
+    const getUserInfo = () => {
+    let userInfo;
+    const username = localStorage.getItem("username");
+    const token = localStorage.getItem("token");
+    const balance = localStorage.getItem("balance");
+    if (username) {
+      userInfo =  {
+        username: username,
+        token: token,
+        balance: balance
+      };
+      
+    } else
+      userInfo = false
+    return userInfo;
+  }
+
   const { enqueueSnackbar } = useSnackbar();
   const [productList, setProductList] = useState([]);
   const [isLoading, setisLoading] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [debounceTimeout, setDebounceTimeout] = useState(0);
   const [apiResponseStatus, setApiResponseStatus] = useState();
+  const [isLoggedIn, setIsLoggedIn] = useState(getUserInfo());
 
+
+  /**
+   * trigger when logout button is clicked and set the login status *isLoggedIn* false
+   * It disables the cart view
+   */
+  const loginStatus = () => {
+    setIsLoggedIn(false)
+  }
   // TODO: CRIO_TASK_MODULE_PRODUCTS - Fetch products data and store it
   /**
    * Make API call to get the products list and store it to display the products
@@ -159,7 +186,7 @@ const Products = () => {
 
   return (
     <div>
-      <Header>
+      <Header loginStatus={loginStatus}>
         {/* TODO: CRIO_TASK_MODULE_PRODUCTS - Display search bar in the header for Products page */}
         <TextField
               className="search-desktop"
@@ -195,42 +222,88 @@ const Products = () => {
         placeholder="Search for items/categories"
         name="search"
       />
-       <Grid container spacing={2}>
-         <Grid item className="product-grid">
-           <Box className="hero">
-             <p className="hero-heading">
-               India’s <span className="hero-highlight">FASTEST DELIVERY</span>{" "}
-               to your door step
-             </p>
-          </Box> 
-        </Grid>
-        {
-          (isLoading === true) ?
-            <Grid item className="product-grid">
-            <Box className = "loading">
-            <CircularProgress color="success" />
-            <Typography>Loading Products</Typography>
-          </Box>
-          </Grid>
-            
-          :
-            (apiResponseStatus !== 200) ? <Grid item className="product-grid">
-              <Box className = "loading">
-                <SentimentDissatisfied />
-                <Typography>No Products Found</Typography>
-              </Box>
-            </Grid>
-              :
-            productList.map((products) => {
-              const { id } = products;
-              return (
-                <Grid item xs={6} md={3} key={id} className="product-grid">
-                  <ProductCard product = {products} />
+        {isLoggedIn ?                                           //login view <product grid with cart>
+          <Grid container>
+            <Grid container item xs={12} md={9} spacing={2}>
+              <Grid item className="product-grid">
+                <Box className="hero">
+                  <p className="hero-heading">
+                    India’s <span className="hero-highlight">FASTEST DELIVERY</span>{" "}
+                    to your door step
+                  </p>
+                </Box> 
+              </Grid>
+            {
+              (isLoading === true) ?
+                <Grid item className="product-grid">
+                  <Box className = "loading">
+                  <CircularProgress color="success" />
+                  <Typography>Loading Products</Typography>
+                  </Box>
                 </Grid>
-              )
-            })
-       }
-      </Grid>
+                
+              :
+                (apiResponseStatus !== 200) ? <Grid item className="product-grid">
+                  <Box className = "loading">
+                    <SentimentDissatisfied />
+                    <Typography>No Products Found</Typography>
+                  </Box>
+                </Grid>
+                  :
+                productList.map((products) => {
+                  const { id } = products;
+                  return (
+                    <Grid item xs={6} md={3} key={id} className="product-grid">
+                      <ProductCard product = {products} />
+                    </Grid>
+                  )
+                })
+              }
+            </Grid>
+            <Grid item xs={12} md={3} className = "cart-place">
+              <Cart />
+            </Grid>
+          </Grid>
+        :                                                                //logout section                                    
+          <Grid container spacing = {2}>
+            <Grid item className="product-grid">
+              <Box className="hero">
+                <p className="hero-heading">
+                  India’s <span className="hero-highlight">FASTEST DELIVERY</span>{" "}
+                  to your door step
+                </p>
+              </Box> 
+            </Grid>
+            {
+            (isLoading === true) ?
+              <Grid item className="product-grid">
+                <Box className = "loading">
+                <CircularProgress color="success" />
+                <Typography>Loading Products</Typography>
+                </Box>
+              </Grid>
+              
+            :
+              (apiResponseStatus !== 200) ? <Grid item className="product-grid">
+                <Box className = "loading">
+                  <SentimentDissatisfied />
+                  <Typography>No Products Found</Typography>
+                </Box>
+              </Grid>
+                :
+              productList.map((products) => {
+                const { id } = products;
+                return (
+                  <Grid item xs={6} md={3} key={id} className="product-grid">
+                    <ProductCard product = {products} />
+                  </Grid>
+                )
+              })
+            }
+          </Grid>
+        }
+        
+      
       
       <Footer />
     </div>

@@ -4,33 +4,37 @@ import Box from "@mui/material/Box";
 import React from "react";
 import "./Header.css";
 import {Link} from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search } from "@mui/icons-material";
 
-const Header = ({ children, hasHiddenAuthButtons }) => {
+const Header = ({ children, hasHiddenAuthButtons, loginStatus}) => {
   const getUserInfo = () => {
+    let userInfo;
     const username = localStorage.getItem("username");
     const token = localStorage.getItem("token");
     const balance = localStorage.getItem("balance");
     if (username) {
-      return {
+      userInfo =  {
         username: username,
         token: token,
         balance: balance
       };
-    } 
-    return false;
+      
+    } else
+      userInfo = false
+    return userInfo;
   }
-  const [isLoggedIn, setIsLoggedIn] = useState(getUserInfo() || false);
+  const [isLoggedIn, setIsLoggedIn] = useState(getUserInfo());
 
   const logout = () => {
     localStorage.clear();
     setIsLoggedIn(false)
+    loginStatus()
   }
 
 
-    return (
-      <Box className="header">
+  return (
+    <Box className="header">
         <Box className="header-title">
             <img src="logo_light.svg" alt="QKart-icon"></img>
         </Box>

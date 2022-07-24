@@ -8,23 +8,25 @@ import { useState, useEffect } from "react";
 import { Search } from "@mui/icons-material";
 
 const Header = ({ children, hasHiddenAuthButtons, loginStatus}) => {
-  const getUserInfo = () => {
-    let userInfo;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+   const getUserInfo = () => {
     const username = localStorage.getItem("username");
     const token = localStorage.getItem("token");
     const balance = localStorage.getItem("balance");
     if (username) {
-      userInfo =  {
+      setIsLoggedIn({
         username: username,
         token: token,
         balance: balance
-      };
+      })
       
-    } else
-      userInfo = false
-    return userInfo;
+    } 
   }
-  const [isLoggedIn, setIsLoggedIn] = useState(getUserInfo());
+
+  useEffect(() => {
+    getUserInfo()
+  },[])
 
   const logout = () => {
     localStorage.clear();

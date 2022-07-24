@@ -11,7 +11,7 @@ import {
 import React from "react";
 import "./ProductCard.css";
 
-const ProductCard = ({ product, handleAddToCart }) => {
+const ProductCard = ({ product, handleAddToCart, isLoggedIn, productInCart, productList }) => {
   return (
     <Card className="card">
        <CardMedia
@@ -30,7 +30,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
         <Rating name="read-only" value={product.rating} readOnly />
       </CardContent>
       <CardActions>
-        <Button variant="contained" startIcon={<AddShoppingCartOutlined />} fullWidth>ADD TO CART</Button>
+        <Button variant="contained" startIcon={<AddShoppingCartOutlined />} onClick={()=>handleAddToCart(isLoggedIn,productInCart,productList,product["_id"],1,{preventDuplicate:true})} fullWidth>ADD TO CART</Button>
       </CardActions>
     </Card>
   );

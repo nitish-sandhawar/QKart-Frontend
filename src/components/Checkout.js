@@ -44,7 +44,7 @@ import Header from "./Header";
 
 
 
-const Checkout = () => {
+const Checkout = ({products,items}) => {
 
 
 

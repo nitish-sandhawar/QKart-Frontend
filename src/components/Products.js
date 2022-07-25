@@ -336,6 +336,7 @@ const Products = () => {
             const postProductToCart = await axios.post(`${config.endpoint}/cart`, { ...productData }, { ...headerData })
             const generatedCartItems = generateCartItemsFrom(postProductToCart.data, products)
             setProductInCart(generatedCartItems)
+            enqueueSnackbar("Item added into cart successfully", {variant: "success", autoHideDuration: 3000 });
           }
         } else if(options.preventDuplicate === false) {                                     //side bar + - buttons 
             const headerData = {
